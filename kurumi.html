@@ -228,11 +228,11 @@ p{
 
 /* ===== ネオン看板（名前用） ===== */
 
-.sign-wrap {
-  display: flex;
-  justify-content: center; /* 中央配置 */
+.sign-wrap{
+  display:flex;
+  justify-content:center;
   margin: 0 auto 12px;
-  width: fit-content;  /* ← 看板サイズぴったり */
+  width: 100%;              /* ← fit-content をやめて 100% */
 }
 
 .sign {
@@ -247,6 +247,8 @@ p{
 
   /* ★ 追加 */
   overflow: visible;        /* ← 中で何が動いても枠は揺れない */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .sign-text {
@@ -339,6 +341,11 @@ p{
   49%  { opacity: 1; }
   50%  { opacity: 0; }
   100% { opacity: 0; }
+}
+@media (max-width: 480px){
+  .sign{
+    padding: 110px 20px;   /* ← 横を縮める（20〜36で調整） */
+  }
 }
 
 </style>
