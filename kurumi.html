@@ -237,7 +237,7 @@ p{
 
 .sign {
   position: relative;
-  padding: 130px 180px;
+  padding: 130px clamp(28px, 10vw, 180px);
   background: transparent;
   border: 4px solid rgba(255,100,220,0.55);
   border-radius: 20px;
@@ -341,11 +341,6 @@ p{
   49%  { opacity: 1; }
   50%  { opacity: 0; }
   100% { opacity: 0; }
-}
-@media (max-width: 480px){
-  .sign{
-    padding: 110px 20px;   /* ← 横を縮める（20〜36で調整） */
-  }
 }
 
 </style>
