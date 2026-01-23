@@ -18,10 +18,11 @@ body{
   min-height:100vh;
   display:flex;
   justify-content:center;
-  align-items:center;
+  align-items:flex-start;   /* ← ★中央 → 上寄せ */
   color:#e0e0e0;
-  overflow:hidden;
+  overflow-x:hidden;        /* ← ★横スクロール防止 */
   line-height: 1.8;
+  padding: 24px 0 48px;     /* ← ★上下余白（下多め） */
 }
 
 /* ===== container & 心電図（そのまま） ===== */
@@ -29,6 +30,7 @@ body{
 .container{
   position:relative;
   width:420px;
+  max-width: 94vw;   /* ← ★これ追加（左右切れ防止） */
   background:#161616;
   padding: 0;
   border-radius:20px;
