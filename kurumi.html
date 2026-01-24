@@ -343,6 +343,62 @@ p{
   100% { opacity: 0; }
 }
 
+/* ===== ファミコン風スライム ===== */
+.slime8{
+  position: relative;
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 6px rgba(120,220,255,.35));
+}
+
+.slime8 .frame{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: slimeSwap 1s steps(1) infinite;
+}
+
+.slime8 .frame.a{ animation-delay: 0s; }
+.slime8 .frame.b{ animation-delay: .5s; }
+
+@keyframes slimeSwap{
+  0%{opacity:1}
+  49%{opacity:1}
+  50%{opacity:0}
+  100%{opacity:0}
+}
+
+/* カクカク跳ねる */
+.slime8{
+  animation: slimeHop 1.2s steps(1) infinite;
+}
+
+@keyframes slimeHop{
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+/* ===== 自由移動用（ここ触る） ===== */
+.slime-pos{
+  position: absolute;
+  left: 25%;     /* ← 横移動ここ */
+  top: 35%;      /* ← 縦移動ここ */
+  transform: translate(-50%, -50%);
+  z-index: 15;   /* kurumiより下なら10〜14 */
+}
+
+.slime-link{
+  position: absolute;
+  left: 25%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+}
+
 </style>
 </head>
 
@@ -352,6 +408,15 @@ p{
   <div class="sign-wrap">
   <div class="sign">
     <h1 class="sign-text flicker">kurumi</h1>
+
+<!-- ★ スライムここから -->
+  <a class="slime-link" href="#" target="_blank" rel="noopener">
+    <span class="slime8 slime-pos">
+      <img class="frame a" src="https://963game.github.io/images/IMG_9379.png" alt="">
+      <img class="frame b" src="https://963game.github.io/images/IMG_9384.png" alt="">
+    </span>
+  </a>
+  <!-- ★ スライムここまで -->
 
 <div class="poke-ticker">
       <div class="poke-text" id="pokeText">
