@@ -176,17 +176,18 @@
 
 /* 左ラベル枠（画像ラベル専用） */
 .label{
-  width: 34px;
-  min-width: 44px;
+  width: 36px;
+  min-width: 36px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* ← 左寄せ */
+  padding-left: 6px;    /* ← 黄色バーから少しだけ離す */
 }
 
 /* ラベル画像 */
 .label-icon{
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   display: block;
   opacity: 0.95;
