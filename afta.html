@@ -200,6 +200,20 @@
   .label-icon{ height: 20px; }
 }
 
+.social-links .value{
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.social-links .value a{
+  display: block;
+  text-align: left;
+  white-space: nowrap;      /* 2段禁止 */
+  overflow: hidden;
+  text-overflow: ellipsis;  /* 長い時は… */
+}
+
   </style>
 </head>
 
@@ -268,14 +282,19 @@
   </p>
   
   <ul class="social-links">
-    <li>
-      <span class="label">
-      <img class="label-icon" src="https://choro7.github.io/nfc-html/X.png" alt="X">
-    </span>
+
+<li>
+  <span class="label">
+    <img class="label-icon" src="https://choro7.github.io/nfc-html/X.png" alt="X">
+  </span>
+
+  <span class="value">
     <a href="https://x.com/bozitomaSSBM" target="_blank" rel="noopener">
       @bozitomaSSBM
     </a>
-    </li>
+  </span>
+</li>
+
   </ul>
 </div>
 
