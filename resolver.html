@@ -162,6 +162,8 @@
   box-shadow:
     0 0 15px var(--accent-glow),
     inset 0 0 12px rgba(0,0,0,0.8);
+
+  position: relative; /* ← これを追加 */
 }
 
 /* 中の表示エリア */
@@ -280,6 +282,33 @@
   }
 }
 
+/* 配信枠内にただ置くだけのアイコン */
+.simple-icon{
+  position: absolute;
+
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+
+  /* ▼ 位置はここだけ触る ▼ */
+  top: 30px;
+  left: 300px;
+
+  opacity: 0.95;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+  pointer-events: none;
+}
+
+/* スマホ微調整 */
+@media (max-width: 480px){
+  .simple-icon{
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    left: 8px;
+  }
+}
+
   </style>
 </head>
 
@@ -291,6 +320,7 @@
 <!-- ===== 配信画面風メッセージ枠 ===== -->
 
 <div class="stream-frame">
+<img class="simple-icon" src="https://963game.github.io/images/%E7%84%A1%E9%A1%8C156_20260120183106.png" alt="">
   <div class="stream-padding">
     <div class="stream-window">
       <div id="scroll-wrap">
