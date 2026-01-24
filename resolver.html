@@ -292,7 +292,9 @@
 
   /* ▼ 位置はここだけ触る ▼ */
   top: 30px;
-  left: 320px;
+  left: 50%;
+transform: translateX(-50%);
+
 
   opacity: 0.95;
   filter: drop-shadow(0 0 6px var(--accent-glow));
@@ -302,10 +304,12 @@
 /* スマホ微調整 */
 @media (max-width: 480px){
   .simple-icon{
-    width: 28px;
-    height: 28px;
-    top: 8px;
-    left: 8px;
+    width: 60px;
+    height: 60px;
+    top: 12px;
+
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
