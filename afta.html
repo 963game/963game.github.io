@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile Format</title>
+
+  <!-- 電子系フォント（kurumiと同じ） -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --accent: #ffd84d;
+      --accent-strong: #ffcc00;
+      --accent-glow: rgba(255,216,77,0.6);
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      line-height: 1.8;
+      margin: 0;
+      padding: 24px 14px;
+      background-color: #121212;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100svh;
+      box-sizing: border-box;
+      letter-spacing: 0.02em; /* ← 電子感をほんのり */
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: #1e1e1e;
+      padding: 32px;
+      border-radius: 15px;
+      border: 1px solid var(--accent);
+      box-shadow:
+        0 0 20px var(--accent-glow),
+        0 0 5px rgba(255, 255, 255, 0.1);
+      box-sizing: border-box;
+    }
+
+    h1, h2 {
+      color: var(--accent);
+      letter-spacing: 0.08em; /* 見出しは少し広め */
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.2em;
+      text-align: center;
+      margin: 0 0 18px;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    h2 {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 10px;
+      margin-top: 28px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    p {
+      font-weight: 400;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul li {
+      background-color: #2a2a2a;
+      margin-bottom: 12px;
+      padding: 14px;
+      border-radius: 8px;
+      border-left: 5px solid var(--accent);
+      box-sizing: border-box;
+      font-weight: 400;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    a:hover {
+      color: #ffffff;
+    }
+
+    .section {
+      margin-bottom: 34px;
+    }
+
+    .social-links li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+/* ===== 名前専用装飾 ===== */
+.name-title{
+  text-align: center;
+  font-size: 2.2em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* AFTA：黒文字＋白ネオン */
+.name-afta{
+  color: #000;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 8px #fff,
+    0 0 14px rgba(255,255,255,0.9);
+}
+
+/* m：赤文字＋黒ネオン */
+.name-m{
+  color: #ff3b3b;
+  text-shadow:
+    0 0 3px #000,
+    0 0 6px #000,
+    0 0 10px rgba(0,0,0,0.9);
+}
+/* iorhece：白文字＋黒ネオン */
+.name-ior{
+  color: #ffffff;
+  text-shadow:
+    0 0 3px #000,
+    0 0 6px #000,
+    0 0 10px rgba(0,0,0,0.9);
+}
+
+/* ===== 管理人コメント：背景にヘッダー画像 ===== */
+.admin-comment{
+  position: relative;
+  min-height: 140px;          /* ← これが一番重要 */
+  padding: 16px 18px;
+  margin: 0 0 14px;
+  border-radius: 10px;
+  font-size: 0.9em;
+  line-height: 1.7;
+  color: #ffffff;
+  overflow: hidden;
+  background: rgba(0,0,0,0.35);
+
+  display: flex;              /* ← 文字配置用 */
+  align-items: flex-end;      /* 下寄せ（顔が見えやすい） */
+}
+
+/* 背景画像 */
+.admin-comment::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://963game.github.io/images/%E7%84%A1%E9%A1%8C168_20260124165059.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+/* 文字を前面に */
+.admin-comment{
+  z-index: 1;
+}
+
+/* 左ラベル枠（画像ラベル専用） */
+.label{
+  width: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ラベル画像 */
+.label-icon{
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.9));
+}
+
+/* スマホ用微調整（任意） */
+@media (max-width: 480px){
+  .label{ min-width: 120px; }
+  .label-icon{ height: 20px; }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="name-title">
+  <span class="name-afta">A</span><span class="name-ior">i</span><span class="name-m">m</span>
+  <span class="name-afta">F</span><span class="name-ior">o</span><span class="name-ior">r</span>
+  <span class="name-afta">T</span><span class="name-ior">h</span><span class="name-ior">e</span>
+  <span class="name-afta">A</span><span class="name-ior">c</span><span class="name-ior">e</span>
+</h1>
+
+    <div class="section">
+      <h2>About</h2>
+      <p>Nintendo 専用ソフト「マリオテニス」のコミュニティファンサイトです。
+ゲームを中心に、プレイの記録や日常的な気づきを発信しています。
+気になった方は、ぜひチェックしてみてください。
+</p>
+    </div>
+
+    <div class="section">
+  <h2>SNS / ゲームID</h2>
+
+  <ul class="social-links">
+    <li>
+      <span class="label">
+        <img class="label-icon" src="https://choro7.github.io/nfc-html/youtube.png" alt="YouTube">
+      </span>
+      <span class="value">
+        <a href="https://www.youtube.com/@AimForTheAce0622" target="_blank" rel="noopener">
+          @AimForTheAce0622
+        </a>
+      </span>
+    </li>
+
+    <li>
+      <span class="label">
+        <img class="label-icon" src="https://choro7.github.io/nfc-html/X.png" alt="X">
+      </span>
+      <span class="value">
+        <a href="https://x.com/aimfortheaceTw" target="_blank" rel="noopener">
+          @aimfortheaceTw
+        </a>
+      </span>
+    </li>
+
+    <li>
+      <span class="label">
+        <img class="label-icon" src="https://963game.github.io/images/afta_20260124182147.png" alt="HP">
+      </span>
+      <span class="value">
+        <a href="https://aimfortheace0622.com" target="_blank" rel="noopener">
+          Aim For The Ace
+        </a>
+      </span>
+    </li>
+  </ul>
+</div>
+
+
+    <div class="section">
+  <h2>Admin</h2>
+
+  <p class="admin-comment">
+    このアカウントは、以下のXアカウントが運営しています。
+  </p>
+  
+  <ul class="social-links">
+    <li>
+      <span class="label">
+      <img class="label-icon" src="https://choro7.github.io/nfc-html/X.png" alt="X">
+    </span>
+    <a href="https://x.com/bozitomaSSBM" target="_blank" rel="noopener">
+      @bozitomaSSBM
+    </a>
+    </li>
+  </ul>
+</div>
+
+  </div>
+</body>
+</html>
