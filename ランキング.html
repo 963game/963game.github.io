@@ -166,47 +166,6 @@
 
     <div class="tabs" id="tabs"></div>
 
-<!-- Player Search -->
-<div class="card" style="margin: 10px 0 12px;">
-  <h2>プレイヤー検索 <span class="tag"><span style="color:var(--accent2)">◆</span> history</span></h2>
-
-  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-    <input id="playerQuery" type="text" placeholder="例：kurumi / くるみ / KURUMI"
-      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-    <button id="playerSearchBtn" type="button"
-      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
-      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
-      color:var(--text); cursor:pointer;">
-      検索
-    </button>
-    <button id="playerClearBtn" type="button"
-      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
-      クリア
-    </button>
-  </div>
-
-  <div style="overflow:auto">
-    <table>
-      <thead>
-        <tr>
-          <th>日付</th>
-          <th>大会</th>
-          <th>種別</th>
-          <th>モード</th>
-          <th>順位</th>
-          <th>相方</th>
-          <th class="right">pt</th>
-        </tr>
-      </thead>
-      <tbody id="playerHistory">
-        <tr><td colspan="7" class="muted">プレイヤー名で検索すると、過去の順位一覧が出ます</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
     <!-- Singles -->
     <section id="singles" class="row active">
       <div class="stack">
@@ -262,6 +221,48 @@
         <div class="twoCol" id="doublesBoards"></div>
       </div>
     </section>
+
+<!-- Player Search -->
+<div class="card" style="margin: 10px 0 12px;">
+  <h2>プレイヤー検索 <span class="tag"><span style="color:var(--accent2)">◆</span> history</span></h2>
+
+  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <input id="playerQuery" type="text" placeholder="例：kurumi / くるみ / KURUMI"
+      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <button id="playerSearchBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+      color:var(--text); cursor:pointer;">
+      検索
+    </button>
+    <button id="playerClearBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+      クリア
+    </button>
+  </div>
+
+  <div style="overflow:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <th>大会</th>
+          <th>種別</th>
+          <th>モード</th>
+          <th>順位</th>
+          <th>相方</th>
+          <th class="right">pt</th>
+        </tr>
+      </thead>
+      <tbody id="playerHistory">
+        <tr><td colspan="7" class="muted">プレイヤー名で検索すると、過去の順位一覧が出ます</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
   </div>
 
   <script>
