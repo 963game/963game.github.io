@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Mario Tennis Fever Community Records</title>
+  <title>Mario Tennis Fever Community Records</title>
 
-<meta property="og:title" content="Mario Tennis Fever Community Records">
-<meta property="og:description" content="コミュニティ大会のレコードページ">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://963game.github.io/ランキング.html">
+  <!-- OGP -->
+  <meta property="og:title" content="Mario Tennis Fever Community Records">
+  <meta property="og:description" content="コミュニティ大会のレコードページ">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://963game.github.io/ランキング.html">
 
-<!-- ★ここから強化版 -->
-<meta property="og:image" content="https://963game.github.io/images/ogp.png?v=1">
-<meta property="og:image:secure_url" content="https://963game.github.io/images/ogp.png?v=1">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<!-- ★ここまで -->
+  <!-- ★強化版 -->
+  <meta property="og:image" content="https://963game.github.io/images/ogp.png?v=1">
+  <meta property="og:image:secure_url" content="https://963game.github.io/images/ogp.png?v=1">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
-<meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary_large_image">
 
   <style>
     :root{
@@ -28,20 +28,20 @@
       --gold:#ffd56a; --silver:#c7d2fe; --bronze:#f2b38f;
     }
     *{box-sizing:border-box}
-body{
-  margin:0;
-  color:var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
 
-  background:
-    linear-gradient(rgba(11,14,20,0.70), rgba(11,14,20,0.78)),
-    url("https://963game.github.io/images/スクリーンショット 2026-02-14 224903.png") center / cover no-repeat fixed,
-    radial-gradient(1200px 600px at 18% 8%, rgba(184,107,255,0.18), transparent 60%),
-    radial-gradient(1200px 600px at 82% 12%, rgba(110,231,255,0.14), transparent 55%),
-    var(--bg);
+      background:
+        linear-gradient(rgba(11,14,20,0.70), rgba(11,14,20,0.78)),
+        url("https://963game.github.io/images/スクリーンショット%202026-02-14%20224903.png") center / cover no-repeat fixed,
+        radial-gradient(1200px 600px at 18% 8%, rgba(184,107,255,0.18), transparent 60%),
+        radial-gradient(1200px 600px at 82% 12%, rgba(110,231,255,0.14), transparent 55%),
+        var(--bg);
 
-  padding:18px 12px 36px;
-}
+      padding:18px 12px 36px;
+    }
     .wrap{max-width:980px;margin:0 auto}
     header{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin:6px 0 10px}
     h1{margin:0;font-size:20px;letter-spacing:.3px}
@@ -78,11 +78,10 @@ body{
       border-radius:18px; overflow:hidden;
       box-shadow:0 10px 40px rgba(0,0,0,.35);
     }
-    /* ★更新情報だけ色を変える */
-   .card.info{
-  border-color: var(--line);
-  background: rgba(18,24,38,0.88); /* ← .card と同じにする */
-}
+    .card.info{
+      border-color: var(--line);
+      background: rgba(18,24,38,0.88);
+    }
 
     .card h2{
       margin:0; padding:12px 12px 10px;
@@ -123,38 +122,31 @@ body{
     .row{display:none}
     .row.active{display:block}
 
-    /* 1 / 1 / 2 */
     .stack{display:grid;grid-template-columns:1fr;gap:12px}
     .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     @media (max-width:820px){ .twoCol{grid-template-columns:1fr} }
 
-/* 更新情報：5行くらい表示して中だけスクロール */
-.infoBox{
-  padding:10px 12px;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.7;
-
-  max-height: 8.7em;      /* 1行(1.7em) × 約5行 = 8.5em くらい */
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  /* スクロールしてる感を抑える */
-  scrollbar-gutter: stable;
-}
-
-.infoBox{
-  scrollbar-width: thin;              /* Firefox */
-  scrollbar-color: rgba(159,176,208,0.35) transparent;
-}
-.infoBox::-webkit-scrollbar{ width: 10px; }
-.infoBox::-webkit-scrollbar-thumb{
-  background: rgba(159,176,208,0.25);
-  border-radius: 999px;
-  border: 3px solid transparent;
-  background-clip: content-box;
-}
-
+    .infoBox{
+      padding:10px 12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.7;
+      max-height: 8.7em;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
+    }
+    .infoBox{
+      scrollbar-width: thin;
+      scrollbar-color: rgba(159,176,208,0.35) transparent;
+    }
+    .infoBox::-webkit-scrollbar{ width: 10px; }
+    .infoBox::-webkit-scrollbar-thumb{
+      background: rgba(159,176,208,0.25);
+      border-radius: 999px;
+      border: 3px solid transparent;
+      background-clip: content-box;
+    }
   </style>
 </head>
 
@@ -176,7 +168,7 @@ body{
       <div class="card info">
         <h2>更新情報 <span class="tag"><span style="color:var(--accent)">●</span> info</span></h2>
         <div class="infoBox">
-          <div>✅ 追記は <span class="mono">events</span> に大会結果を足すだけ</div>
+          <div>✅ 追記は <span class="mono">スプシ</span> に大会結果を足すだけ</div>
           <div>✅ 部門枠は <span class="mono">累計ポイント上位（ベスト記録）</span> を表示</div>
           <div>✅ 総合は <span class="mono">合計pt / 優勝 / 出場</span> を集計</div>
           <div>最新（フィーバー）：<span id="latestSinglesFever" class="mono"></span></div>
@@ -234,60 +226,17 @@ body{
 </div>
 
 <script>
-  // ===== 配点（固定）===== 2倍スケール（整数化）
+  // ===== 配点（固定）=====
   const singlesPoints = {1:20,2:16,3:12,4:10,5:8,6:6,7:4,8:2};
   const doublesTeamPoints = {...singlesPoints};
   const doublesPerPerson = (rank)=> (doublesTeamPoints[rank] ?? 0) / 2;
 
-  // ===== ここが「裏入力」：大会ごとに追加していく =====
-  // tournament（大会名）を入れるだけで更新情報に反映される
-  const events = [
-    {
-      date: "2026-02-01",
-      tournament: "Fever Singles #01",
-      type: "singles",
-      mode: "fever",
-      note: "online",
-      results: [
-        {rank:1, player:"PlayerA"},
-        {rank:2, player:"PlayerB"},
-        {rank:3, player:"PlayerC"},
-      ]
-    },
-    {
-      date: "2026-02-03",
-      tournament: "Classic Singles #01",
-      type: "singles",
-      mode: "classic",
-      note: "offline",
-      results: [
-        {rank:1, player:"PlayerB"},
-        {rank:2, player:"PlayerA"},
-      ]
-    },
-    {
-      date: "2026-02-05",
-      tournament: "Fever Doubles #01",
-      type: "doubles",
-      mode: "fever",
-      note: "online",
-      results: [
-        {rank:1, p1:"PlayerA", p2:"PlayerC"},
-        {rank:2, p1:"PlayerB", p2:"PlayerD"},
-      ]
-    },
-    {
-      date: "2026-02-07",
-      tournament: "Classic Doubles #01",
-      type: "doubles",
-      mode: "classic",
-      note: "offline",
-      results: [
-        {rank:1, p1:"PlayerB", p2:"PlayerC"},
-        {rank:2, p1:"PlayerA", p2:"PlayerD"},
-      ]
-    },
-  ];
+  // ★ここにスプシCSV URL（あなたのを入れてOK）
+  const SPREADSHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSydZeRcqGb_J3B1GadvScM6gRdCbxaQc0C4WC2vEasXU-ov21qtl2E4ae6icxrtqMdFtPZlZlTW-6s/pub?gid=0&single=true&output=csv";
+
+  // ★eventsは“最初は空” → 読み込んで入れる
+  let events = [];
 
   const $ = (s)=>document.querySelector(s);
 
@@ -318,14 +267,15 @@ body{
   }
 
   function splitExamples(){
-    return `分配例：1位 ${doublesTeamPoints[1]}→${doublesPerPerson(1)}+${doublesPerPerson(1)} / 4位 ${doublesTeamPoints[4]}→${doublesPerPerson(4)}+${doublesPerPerson(4)} / 8位 ${doublesTeamPoints[8]}→${doublesPerPerson(8)}+${doublesPerPerson(8)}`;
+    return `分配：1位 ${doublesTeamPoints[1]}→${doublesPerPerson(1)}+${doublesPerPerson(1)} / 4位 ${doublesTeamPoints[4]}→${doublesPerPerson(4)}+${doublesPerPerson(4)} / 8位 ${doublesTeamPoints[8]}→${doublesPerPerson(8)}+${doublesPerPerson(8)}`;
   }
 
   function updatePill(activeKey){
     const base = `配点：${pointsLabel()}`;
     const pill = $("#pillText");
     if(activeKey==="doubles"){
-      pill.innerHTML = `${base}　<b style="font-weight:600">｜</b>　${splitExamples()}`;
+      // 2段にしたいならここで改造できる（後でやる）
+      pill.textContent = `${base} ｜ ${splitExamples()}`;
       pill.title = `ダブルスはチームptを2人に等分して個人に加算`;
     }else{
       pill.textContent = base;
@@ -333,7 +283,7 @@ body{
     }
   }
 
-  // 同ポイントなら同順位（競技順位：1,1,3…）
+  // 同ポイントなら同順位（1,1,3…）
   function addTiedRanks(rows){
     let rank = 0;
     let shown = 0;
@@ -348,7 +298,7 @@ body{
     });
   }
 
-  // ★最新TOP3（type + mode）
+  // 最新大会（type+mode）
   function latestEvent(type, mode){
     const list = events
       .filter(e=>e.type===type && e.mode===mode)
@@ -367,29 +317,24 @@ body{
       return `${r.p1}/${r.p2}`;
     };
 
-    const date = e.date ?? "—";
-    const tn = e.tournament ?? "—";
-    return `${date}　${tn}　1位 ${nameAtRank(1)}　2位 ${nameAtRank(2)}　3位 ${nameAtRank(3)}`;
+    return `${e.date}　${e.tournament}　1位 ${nameAtRank(1)}　2位 ${nameAtRank(2)}　3位 ${nameAtRank(3)}`;
   }
 
-  // 総合（type全体）
+  // 総合
   function computeStats(type){
-    const map = new Map(); // name -> {pt,wins,plays}
+    const map = new Map();
     const add = (name, pt, isWin)=>{
-      const k = name; // 同一扱いしない
-      if(!k) return;
-      const v = map.get(k) ?? {pt:0,wins:0,plays:0};
+      if(!name) return;
+      const v = map.get(name) ?? {pt:0,wins:0,plays:0};
       v.pt += pt;
       v.plays += 1;
       if(isWin) v.wins += 1;
-      map.set(k, v);
+      map.set(name, v);
     };
 
     events.filter(e=>e.type===type).forEach(e=>{
       if(type==="singles"){
-        e.results.forEach(r=>{
-          add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1);
-        });
+        e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
       }else{
         e.results.forEach(r=>{
           const ptEach = doublesPerPerson(r.rank);
@@ -404,24 +349,21 @@ body{
       .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
   }
 
-  // 部門ベスト（type+mode）
+  // モード別
   function computeModeStats(type, mode){
-    const map = new Map(); // name -> {pt,wins,plays}
+    const map = new Map();
     const add = (name, pt, isWin)=>{
-      const k = name; // 同一扱いしない
-      if(!k) return;
-      const v = map.get(k) ?? {pt:0,wins:0,plays:0};
+      if(!name) return;
+      const v = map.get(name) ?? {pt:0,wins:0,plays:0};
       v.pt += pt;
       v.plays += 1;
       if(isWin) v.wins += 1;
-      map.set(k, v);
+      map.set(name, v);
     };
 
     events.filter(e=>e.type===type && e.mode===mode).forEach(e=>{
       if(type==="singles"){
-        e.results.forEach(r=>{
-          add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1);
-        });
+        e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
       }else{
         e.results.forEach(r=>{
           const ptEach = doublesPerPerson(r.rank);
@@ -440,19 +382,17 @@ body{
     const tb = document.getElementById(tbodyId);
     tb.innerHTML = "";
     if(rows.length===0){
-      tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません（eventsに追記してね）</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません（スプシに追記してね）</td></tr>`;
       return;
     }
-    const ranked = addTiedRanks(rows);
-    ranked.forEach((r)=>{
+    addTiedRanks(rows).forEach(r=>{
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="mono">${r.rank}</td>
         <td>${r.name}</td>
         <td class="right mono">${r.pt}</td>
         <td class="right mono">${r.wins}</td>
-        <td class="right mono">${r.plays}</td>
-      `;
+        <td class="right mono">${r.plays}</td>`;
       tb.appendChild(tr);
     });
   }
@@ -483,24 +423,21 @@ body{
           <th class="right">出場</th>
         </tr>
       </thead>
-      <tbody></tbody>
-    `;
+      <tbody></tbody>`;
     const tb = table.querySelector("tbody");
 
     const top = rows.slice(0,8);
     if(top.length===0){
-      tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません（eventsに追記してね）</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません（スプシに追記してね）</td></tr>`;
     }else{
-      const ranked = addTiedRanks(top);
-      ranked.forEach((r)=>{
+      addTiedRanks(top).forEach(r=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="rank"><span class="${badgeClass(r.rank)}"><span class="mono">#${r.rank}</span></span></td>
           <td>${r.name}</td>
           <td class="right mono">${r.pt}</td>
           <td class="right mono">${r.wins}</td>
-          <td class="right mono">${r.plays}</td>
-        `;
+          <td class="right mono">${r.plays}</td>`;
         tb.appendChild(tr);
       });
     }
@@ -511,6 +448,84 @@ body{
     document.getElementById(targetId).appendChild(wrap);
   }
 
+  // CSV読み込み → events化
+  async function loadEventsFromSheet(){
+    const url = SPREADSHEET_CSV_URL + (SPREADSHEET_CSV_URL.includes("?") ? "&" : "?") + "v=" + Date.now();
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("CSV fetch failed: " + res.status);
+
+    const csv = await res.text();
+    const rows = parseCSV(csv);
+
+    const data = rows.slice(1)
+      .map(r => ({
+        date: (r[0] || "").trim(),
+        tournament: (r[1] || "").trim(),
+        type: (r[2] || "").trim(),
+        mode: (r[3] || "").trim(),
+        note: (r[4] || "").trim(),
+        rank: Number((r[5] || "").trim()),
+        p1: (r[6] || "").trim(),
+        p2: (r[7] || "").trim(),
+      }))
+      .filter(r =>
+        r.date && r.tournament &&
+        (r.type==="singles" || r.type==="doubles") &&
+        (r.mode==="fever" || r.mode==="classic") &&
+        Number.isFinite(r.rank)
+      );
+
+    const map = new Map();
+    for(const r of data){
+      const key = [r.date, r.tournament, r.type, r.mode, r.note].join("||");
+      if(!map.has(key)){
+        map.set(key, {date:r.date, tournament:r.tournament, type:r.type, mode:r.mode, note:r.note, results:[]});
+      }
+      const e = map.get(key);
+      if(r.type==="singles"){
+        if(r.p1) e.results.push({rank:r.rank, player:r.p1});
+      }else{
+        if(r.p1 && r.p2) e.results.push({rank:r.rank, p1:r.p1, p2:r.p2});
+      }
+    }
+
+    const ev = Array.from(map.values());
+    ev.forEach(e => e.results.sort((a,b)=>a.rank-b.rank));
+    ev.sort((a,b)=> (a.date > b.date ? 1 : -1));
+    return ev;
+  }
+
+  function parseCSV(text){
+    const out = [];
+    let row = [];
+    let cur = "";
+    let inQ = false;
+
+    for(let i=0;i<text.length;i++){
+      const c = text[i];
+      const n = text[i+1];
+
+      if(inQ){
+        if(c === '"' && n === '"'){ cur += '"'; i++; }
+        else if(c === '"'){ inQ = false; }
+        else { cur += c; }
+      }else{
+        if(c === '"'){ inQ = true; }
+        else if(c === ","){ row.push(cur); cur = ""; }
+        else if(c === "\n"){
+          row.push(cur); out.push(row);
+          row = []; cur = "";
+        }else if(c === "\r"){
+        }else{
+          cur += c;
+        }
+      }
+    }
+    if(cur.length || row.length){ row.push(cur); out.push(row); }
+    return out;
+  }
+
+  // 画面描画
   function init(){
     // tabs
     const tabsWrap = $("#tabs");
@@ -528,12 +543,12 @@ body{
     $("#pointsLabel").textContent = pointsLabel();
     updatePill("singles");
 
-    // updated times
+    // updated
     const now = new Date().toISOString().slice(0,19).replace("T"," ");
     $("#updatedAtS").textContent = now;
     $("#updatedAtD").textContent = now;
 
-    // ★モード別 最新TOP3
+    // latest
     $("#latestSinglesFever").textContent   = podiumText("singles","fever");
     $("#latestSinglesClassic").textContent = podiumText("singles","classic");
     $("#latestDoublesFever").textContent   = podiumText("doubles","fever");
@@ -543,7 +558,7 @@ body{
     renderOverall("singlesOverall", computeStats("singles"));
     renderOverall("doublesOverall", computeStats("doubles"));
 
-    // mode boards (best)
+    // mode boards
     $("#singlesBoards").innerHTML = "";
     $("#doublesBoards").innerHTML = "";
 
@@ -554,10 +569,17 @@ body{
     renderModeCard("doublesBoards", "クラシック｜ダブルス（個人累計上位）", computeModeStats("doubles","classic"));
   }
 
-  init();
+  // 起動：スプシ読んでから描画
+  (async () => {
+    try{
+      events = await loadEventsFromSheet();
+      init();
+    }catch(err){
+      console.error(err);
+      alert("スプシ読み込みに失敗：CSV公開URL/公開設定を確認してね");
+      init(); // 空でも画面は出す
+    }
+  })();
 </script>
 </body>
 </html>
-
-
-
