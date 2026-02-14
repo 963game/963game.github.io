@@ -166,6 +166,47 @@
 
     <div class="tabs" id="tabs"></div>
 
+<!-- Player Search -->
+<div class="card" style="margin: 10px 0 12px;">
+  <h2>プレイヤー検索 <span class="tag"><span style="color:var(--accent2)">◆</span> history</span></h2>
+
+  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <input id="playerQuery" type="text" placeholder="例：kurumi / くるみ / KURUMI"
+      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <button id="playerSearchBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+      color:var(--text); cursor:pointer;">
+      検索
+    </button>
+    <button id="playerClearBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+      クリア
+    </button>
+  </div>
+
+  <div style="overflow:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <th>大会</th>
+          <th>種別</th>
+          <th>モード</th>
+          <th>順位</th>
+          <th>相方</th>
+          <th class="right">pt</th>
+        </tr>
+      </thead>
+      <tbody id="playerHistory">
+        <tr><td colspan="7" class="muted">プレイヤー名で検索すると、過去の順位一覧が出ます</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
     <!-- Singles -->
     <section id="singles" class="row active">
       <div class="stack">
@@ -565,6 +606,8 @@
 
       renderModeCard("doublesBoards", "フィーバー｜ダブルス（個人累計上位）", computeModeStats("doubles","fever"));
       renderModeCard("doublesBoards", "クラシック｜ダブルス（個人累計上位）", computeModeStats("doubles","classic"));
+
+      setupPlayerSearch();
     }
 
     // 起動：スプシ読んでから描画
@@ -578,6 +621,121 @@
         init(); // 空でも画面は出す
       }
     })();
+
+// ===== プレイヤー履歴 =====
+function normalizeName(s){
+  return (s || "").trim().toLowerCase();
+}
+
+function pointsForResult(type, rank){
+  if(type === "singles") return singlesPoints[rank] ?? 0;
+  return doublesPerPerson(rank);
+}
+
+function getPlayerHistory(name){
+  const q = normalizeName(name);
+  if(!q) return [];
+
+  const out = [];
+  for(const e of events){
+    for(const r of (e.results || [])){
+      if(e.type === "singles"){
+        const p = normalizeName(r.player);
+        if(p === q){
+          out.push({
+            date: e.date,
+            tournament: e.tournament,
+            type: "singles",
+            mode: e.mode,
+            rank: r.rank,
+            partner: "",
+            pt: pointsForResult("singles", r.rank),
+          });
+        }
+      }else{
+        const p1 = normalizeName(r.p1);
+        const p2 = normalizeName(r.p2);
+        if(p1 === q || p2 === q){
+          const partner = (p1 === q) ? r.p2 : r.p1;
+          out.push({
+            date: e.date,
+            tournament: e.tournament,
+            type: "doubles",
+            mode: e.mode,
+            rank: r.rank,
+            partner: partner || "",
+            pt: pointsForResult("doubles", r.rank),
+          });
+        }
+      }
+    }
+  }
+
+  // 日付降順 → 同日なら大会名で軽く整列
+  out.sort((a,b)=> (a.date < b.date ? 1 : a.date > b.date ? -1 : a.tournament.localeCompare(b.tournament,"ja")));
+  return out;
+}
+
+function renderPlayerHistory(rows){
+  const tb = document.getElementById("playerHistory");
+  if(!tb) return;
+
+  tb.innerHTML = "";
+  if(rows.length === 0){
+    tb.innerHTML = `<tr><td colspan="7" class="muted">該当なし（表記ゆれがあるなら、スプシの名前を統一してね）</td></tr>`;
+    return;
+  }
+
+  rows.forEach(x=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="mono">${x.date}</td>
+      <td>${x.tournament}</td>
+      <td>${x.type === "singles" ? "シングル" : "ダブル"}</td>
+      <td>${x.mode === "fever" ? "フィーバー" : "クラシック"}</td>
+      <td class="mono">${x.rank}</td>
+      <td>${x.partner || "—"}</td>
+      <td class="right mono">${x.pt}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function setupPlayerSearch(){
+  const input = document.getElementById("playerQuery");
+  const btn = document.getElementById("playerSearchBtn");
+  const clr = document.getElementById("playerClearBtn");
+  if(!input || !btn || !clr) return;
+
+  const run = ()=>{
+    const rows = getPlayerHistory(input.value);
+    renderPlayerHistory(rows);
+  };
+
+  // 検索
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    run();
+  });
+
+  // Enterでも検索
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){
+      e.preventDefault();
+      run();
+    }
+  });
+
+  // クリア（←ここが質問のやつ）
+  clr.addEventListener("click", (e)=>{
+    e.preventDefault();
+    input.value = "";
+    const tb = document.getElementById("playerHistory");
+    if(tb) tb.innerHTML = `<tr><td colspan="7" class="muted">プレイヤー名で検索すると、過去の順位一覧が出ます</td></tr>`;
+    input.focus();
+  });
+}
+
   </script>
 </body>
 </html>
