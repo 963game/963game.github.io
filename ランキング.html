@@ -42,6 +42,7 @@
 
       padding:18px 12px 36px;
     }
+
     .wrap{max-width:980px;margin:0 auto}
     header{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin:6px 0 10px}
     h1{margin:0;font-size:20px;letter-spacing:.3px}
@@ -105,7 +106,10 @@
 
     .rank{width:64px;font-variant-numeric:tabular-nums}
     .right{text-align:right}
-    .mono{font-variant-numeric:tabular-nums;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .mono{
+      font-variant-numeric:tabular-nums;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
     .muted{color:var(--muted)}
 
     .badge{
@@ -151,289 +155,237 @@
 </head>
 
 <body>
-<div class="wrap">
-  <header>
-    <div>
-      <h1>Mario Tennis Fever Community Records</h1>
-      <div class="sub">フィーバー/クラシック・オンライン/オフライン混同。記録を育てるレコードページ。</div>
-    </div>
-    <div class="pill" id="pillText">配点：<b id="pointsLabel"></b></div>
-  </header>
-
-  <div class="tabs" id="tabs"></div>
-
-  <!-- Singles -->
-  <section id="singles" class="row active">
-    <div class="stack">
-      <div class="card info">
-        <h2>更新情報 <span class="tag"><span style="color:var(--accent)">●</span> info</span></h2>
-        <div class="infoBox">
-          <div>✅ 追記は <span class="mono">スプシ</span> に大会結果を足すだけ</div>
-          <div>✅ 部門枠は <span class="mono">累計ポイント上位（ベスト記録）</span> を表示</div>
-          <div>✅ 総合は <span class="mono">合計pt / 優勝 / 出場</span> を集計</div>
-          <div>最新（フィーバー）：<span id="latestSinglesFever" class="mono"></span></div>
-          <div>最新（クラシック）：<span id="latestSinglesClassic" class="mono"></span></div>
-          <div>更新：<span id="updatedAtS" class="mono"></span></div>
-        </div>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Mario Tennis Fever Community Records</h1>
+        <div class="sub">フィーバー/クラシック・オンライン/オフライン混同。記録を育てるレコードページ。</div>
       </div>
+      <div class="pill" id="pillText">配点：<b id="pointsLabel"></b></div>
+    </header>
 
-      <div class="card">
-        <h2>シングルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> points / wins / plays</span></h2>
-        <div style="overflow:auto">
-          <table>
-            <thead>
-              <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
-            </thead>
-            <tbody id="singlesOverall"></tbody>
-          </table>
+    <div class="tabs" id="tabs"></div>
+
+    <!-- Singles -->
+    <section id="singles" class="row active">
+      <div class="stack">
+        <div class="card info">
+          <h2>更新情報 <span class="tag"><span style="color:var(--accent)">●</span> info</span></h2>
+          <div class="infoBox">
+            <div>最新（フィーバー）：<span id="latestSinglesFever" class="mono"></span></div>
+            <div>最新（クラシック）：<span id="latestSinglesClassic" class="mono"></span></div>
+            <div>更新：<span id="updatedAtS" class="mono"></span></div>
+          </div>
         </div>
-      </div>
 
-      <div class="twoCol" id="singlesBoards"></div>
-    </div>
-  </section>
-
-  <!-- Doubles -->
-  <section id="doubles" class="row">
-    <div class="stack">
-      <div class="card info">
-        <h2>更新情報 <span class="tag"><span style="color:var(--accent)">●</span> info</span></h2>
-        <div class="infoBox">
-          <div>✅ ダブルスは <span class="mono">チームptを2人に等分</span>して個人に加算</div>
-          <div>✅ 部門枠は <span class="mono">累計ポイント上位（ベスト記録）</span></div>
-          <div>✅ ペア固定が難しい前提で、表示も集計も“個人”中心</div>
-          <div>最新（フィーバー）：<span id="latestDoublesFever" class="mono"></span></div>
-          <div>最新（クラシック）：<span id="latestDoublesClassic" class="mono"></span></div>
-          <div>更新：<span id="updatedAtD" class="mono"></span></div>
+        <div class="card">
+          <h2>シングルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> points / wins / plays</span></h2>
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+              </thead>
+              <tbody id="singlesOverall"></tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <h2>ダブルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> split points</span></h2>
-        <div style="overflow:auto">
-          <table>
-            <thead>
-              <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
-            </thead>
-            <tbody id="doublesOverall"></tbody>
-          </table>
+        <div class="twoCol" id="singlesBoards"></div>
+      </div>
+    </section>
+
+    <!-- Doubles -->
+    <section id="doubles" class="row">
+      <div class="stack">
+        <div class="card info">
+          <h2>更新情報 <span class="tag"><span style="color:var(--accent)">●</span> info</span></h2>
+          <div class="infoBox">
+            <div>最新（フィーバー）：<span id="latestDoublesFever" class="mono"></span></div>
+            <div>最新（クラシック）：<span id="latestDoublesClassic" class="mono"></span></div>
+            <div>更新：<span id="updatedAtD" class="mono"></span></div>
+          </div>
         </div>
+
+        <div class="card">
+          <h2>ダブルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> split points</span></h2>
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+              </thead>
+              <tbody id="doublesOverall"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="twoCol" id="doublesBoards"></div>
       </div>
+    </section>
+  </div>
 
-      <div class="twoCol" id="doublesBoards"></div>
-    </div>
-  </section>
-</div>
+  <script>
+    // ===== 配点（固定）=====
+    const singlesPoints = {1:20,2:16,3:12,4:10,5:8,6:6,7:4,8:2};
+    const doublesTeamPoints = {...singlesPoints};
+    const doublesPerPerson = (rank)=> (doublesTeamPoints[rank] ?? 0) / 2;
 
-<script>
-  // ===== 配点（固定）=====
-  const singlesPoints = {1:20,2:16,3:12,4:10,5:8,6:6,7:4,8:2};
-  const doublesTeamPoints = {...singlesPoints};
-  const doublesPerPerson = (rank)=> (doublesTeamPoints[rank] ?? 0) / 2;
+    // ★ここにスプシCSV URL（あなたのを入れてOK）
+    const SPREADSHEET_CSV_URL =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSydZeRcqGb_J3B1GadvScM6gRdCbxaQc0C4WC2vEasXU-ov21qtl2E4ae6icxrtqMdFtPZlZlTW-6s/pub?gid=0&single=true&output=csv";
 
-  // ★ここにスプシCSV URL（あなたのを入れてOK）
-  const SPREADSHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSydZeRcqGb_J3B1GadvScM6gRdCbxaQc0C4WC2vEasXU-ov21qtl2E4ae6icxrtqMdFtPZlZlTW-6s/pub?gid=0&single=true&output=csv";
+    // ★eventsは“最初は空” → 読み込んで入れる
+    let events = [];
 
-  // ★eventsは“最初は空” → 読み込んで入れる
-  let events = [];
+    const $ = (s)=>document.querySelector(s);
 
-  const $ = (s)=>document.querySelector(s);
+    const tabs = [
+      {key:"singles", label:"シングルス"},
+      {key:"doubles", label:"ダブルス"},
+    ];
 
-  const tabs = [
-    {key:"singles", label:"シングルス"},
-    {key:"doubles", label:"ダブルス"},
-  ];
-
-  function setActiveTab(key){
-    tabs.forEach(t=>{
-      $("#tab_"+t.key).classList.toggle("active", t.key===key);
-      $("#"+t.key).classList.toggle("active", t.key===key);
-    });
-    updatePill(key);
-  }
-
-  function badgeClass(rank){
-    if(rank===1) return "badge r1";
-    if(rank===2) return "badge r2";
-    if(rank===3) return "badge r3";
-    return "badge";
-  }
-
-  function pointsLabel(){
-    const s = [];
-    for(let r=1;r<=8;r++) s.push(`${r}位:${singlesPoints[r]}`);
-    return s.join(" / ");
-  }
-
-  function splitExamples(){
-    return `分配：1位 ${doublesTeamPoints[1]}→${doublesPerPerson(1)}+${doublesPerPerson(1)} / 4位 ${doublesTeamPoints[4]}→${doublesPerPerson(4)}+${doublesPerPerson(4)} / 8位 ${doublesTeamPoints[8]}→${doublesPerPerson(8)}+${doublesPerPerson(8)}`;
-  }
-
-  function updatePill(activeKey){
-    const base = `配点：${pointsLabel()}`;
-    const pill = $("#pillText");
-    if(activeKey==="doubles"){
-      // 2段にしたいならここで改造できる（後でやる）
-      pill.textContent = `${base} ｜ ${splitExamples()}`;
-      pill.title = `ダブルスはチームptを2人に等分して個人に加算`;
-    }else{
-      pill.textContent = base;
-      pill.title = `シングルス配点`;
+    function setActiveTab(key){
+      tabs.forEach(t=>{
+        $("#tab_"+t.key).classList.toggle("active", t.key===key);
+        $("#"+t.key).classList.toggle("active", t.key===key);
+      });
+      updatePill(key);
     }
-  }
 
-  // 同ポイントなら同順位（1,1,3…）
-  function addTiedRanks(rows){
-    let rank = 0;
-    let shown = 0;
-    let prevPt = null;
-    return rows.map(r=>{
-      shown += 1;
-      if(prevPt === null || r.pt !== prevPt){
-        rank = shown;
-        prevPt = r.pt;
-      }
-      return {...r, rank};
-    });
-  }
-
-  // 最新大会（type+mode）
-  function latestEvent(type, mode){
-    const list = events
-      .filter(e=>e.type===type && e.mode===mode)
-      .sort((a,b)=> (a.date < b.date ? 1 : -1));
-    return list[0] ?? null;
-  }
-
-  function podiumText(type, mode){
-    const e = latestEvent(type, mode);
-    if(!e) return "—";
-
-    const nameAtRank = (rank)=>{
-      const r = (e.results || []).find(x => x.rank === rank);
-      if(!r) return "—";
-      if(type==="singles") return r.player;
-      return `${r.p1}/${r.p2}`;
-    };
-
-    return `${e.date}　${e.tournament}　1位 ${nameAtRank(1)}　2位 ${nameAtRank(2)}　3位 ${nameAtRank(3)}`;
-  }
-
-  // 総合
-  function computeStats(type){
-    const map = new Map();
-    const add = (name, pt, isWin)=>{
-      if(!name) return;
-      const v = map.get(name) ?? {pt:0,wins:0,plays:0};
-      v.pt += pt;
-      v.plays += 1;
-      if(isWin) v.wins += 1;
-      map.set(name, v);
-    };
-
-    events.filter(e=>e.type===type).forEach(e=>{
-      if(type==="singles"){
-        e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
-      }else{
-        e.results.forEach(r=>{
-          const ptEach = doublesPerPerson(r.rank);
-          add(r.p1, ptEach, r.rank===1);
-          add(r.p2, ptEach, r.rank===1);
-        });
-      }
-    });
-
-    return Array.from(map.entries())
-      .map(([name,v])=>({name, ...v}))
-      .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
-  }
-
-  // モード別
-  function computeModeStats(type, mode){
-    const map = new Map();
-    const add = (name, pt, isWin)=>{
-      if(!name) return;
-      const v = map.get(name) ?? {pt:0,wins:0,plays:0};
-      v.pt += pt;
-      v.plays += 1;
-      if(isWin) v.wins += 1;
-      map.set(name, v);
-    };
-
-    events.filter(e=>e.type===type && e.mode===mode).forEach(e=>{
-      if(type==="singles"){
-        e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
-      }else{
-        e.results.forEach(r=>{
-          const ptEach = doublesPerPerson(r.rank);
-          add(r.p1, ptEach, r.rank===1);
-          add(r.p2, ptEach, r.rank===1);
-        });
-      }
-    });
-
-    return Array.from(map.entries())
-      .map(([name,v])=>({name, ...v}))
-      .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
-  }
-
-  function renderOverall(tbodyId, rows){
-    const tb = document.getElementById(tbodyId);
-    tb.innerHTML = "";
-    if(rows.length===0){
-      tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません（スプシに追記してね）</td></tr>`;
-      return;
+    function badgeClass(rank){
+      if(rank===1) return "badge r1";
+      if(rank===2) return "badge r2";
+      if(rank===3) return "badge r3";
+      return "badge";
     }
-    addTiedRanks(rows).forEach(r=>{
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="mono">${r.rank}</td>
-        <td>${r.name}</td>
-        <td class="right mono">${r.pt}</td>
-        <td class="right mono">${r.wins}</td>
-        <td class="right mono">${r.plays}</td>`;
-      tb.appendChild(tr);
-    });
-  }
 
-  function renderModeCard(targetId, title, rows){
-    const wrap = document.createElement("div");
-    wrap.className = "card";
+    function pointsLabel(){
+      const s = [];
+      for(let r=1;r<=8;r++) s.push(`${r}位:${singlesPoints[r]}`);
+      return s.join(" / ");
+    }
 
-    const h2 = document.createElement("h2");
-    const left = document.createElement("span");
-    left.textContent = title;
-    const right = document.createElement("span");
-    right.className = "tag";
-    right.innerHTML = `<span style="color:var(--accent2)">◆</span> best`;
-    h2.appendChild(left); h2.appendChild(right);
+    function splitExamples(){
+      return `分配：1位 ${doublesTeamPoints[1]}→${doublesPerPerson(1)}+${doublesPerPerson(1)} / 4位 ${doublesTeamPoints[4]}→${doublesPerPerson(4)}+${doublesPerPerson(4)} / 8位 ${doublesTeamPoints[8]}→${doublesPerPerson(8)}+${doublesPerPerson(8)}`;
+    }
 
-    const content = document.createElement("div");
-    content.style.overflow = "auto";
+    function updatePill(activeKey){
+      const base = `配点：${pointsLabel()}`;
+      const pill = $("#pillText");
+      if(activeKey==="doubles"){
+        pill.textContent = `${base} ｜ ${splitExamples()}`;
+        pill.title = "ダブルスはチームptを2人に等分して個人に加算";
+      }else{
+        pill.textContent = base;
+        pill.title = "シングルス配点";
+      }
+    }
 
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th class="rank">順位</th>
-          <th>プレイヤー</th>
-          <th class="right">pt</th>
-          <th class="right">優勝</th>
-          <th class="right">出場</th>
-        </tr>
-      </thead>
-      <tbody></tbody>`;
-    const tb = table.querySelector("tbody");
+    // 同ポイントなら同順位（1,1,3…）
+    function addTiedRanks(rows){
+      let rank = 0;
+      let shown = 0;
+      let prevPt = null;
+      return rows.map(r=>{
+        shown += 1;
+        if(prevPt === null || r.pt !== prevPt){
+          rank = shown;
+          prevPt = r.pt;
+        }
+        return {...r, rank};
+      });
+    }
 
-    const top = rows.slice(0,8);
-    if(top.length===0){
-      tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません（スプシに追記してね）</td></tr>`;
-    }else{
-      addTiedRanks(top).forEach(r=>{
+    // 最新大会（type+mode）
+    function latestEvent(type, mode){
+      const list = events
+        .filter(e=>e.type===type && e.mode===mode)
+        .sort((a,b)=> (a.date < b.date ? 1 : -1));
+      return list[0] ?? null;
+    }
+
+    function podiumText(type, mode){
+      const e = latestEvent(type, mode);
+      if(!e) return "—";
+
+      const nameAtRank = (rank)=>{
+        const r = (e.results || []).find(x => x.rank === rank);
+        if(!r) return "—";
+        if(type==="singles") return r.player;
+        return `${r.p1}/${r.p2}`;
+      };
+
+      return `${e.date}　${e.tournament}　1位 ${nameAtRank(1)}　2位 ${nameAtRank(2)}　3位 ${nameAtRank(3)}`;
+    }
+
+    // 総合
+    function computeStats(type){
+      const map = new Map();
+      const add = (name, pt, isWin)=>{
+        if(!name) return;
+        const v = map.get(name) ?? {pt:0,wins:0,plays:0};
+        v.pt += pt;
+        v.plays += 1;
+        if(isWin) v.wins += 1;
+        map.set(name, v);
+      };
+
+      events.filter(e=>e.type===type).forEach(e=>{
+        if(type==="singles"){
+          e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
+        }else{
+          e.results.forEach(r=>{
+            const ptEach = doublesPerPerson(r.rank);
+            add(r.p1, ptEach, r.rank===1);
+            add(r.p2, ptEach, r.rank===1);
+          });
+        }
+      });
+
+      return Array.from(map.entries())
+        .map(([name,v])=>({name, ...v}))
+        .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
+    }
+
+    // モード別
+    function computeModeStats(type, mode){
+      const map = new Map();
+      const add = (name, pt, isWin)=>{
+        if(!name) return;
+        const v = map.get(name) ?? {pt:0,wins:0,plays:0};
+        v.pt += pt;
+        v.plays += 1;
+        if(isWin) v.wins += 1;
+        map.set(name, v);
+      };
+
+      events.filter(e=>e.type===type && e.mode===mode).forEach(e=>{
+        if(type==="singles"){
+          e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
+        }else{
+          e.results.forEach(r=>{
+            const ptEach = doublesPerPerson(r.rank);
+            add(r.p1, ptEach, r.rank===1);
+            add(r.p2, ptEach, r.rank===1);
+          });
+        }
+      });
+
+      return Array.from(map.entries())
+        .map(([name,v])=>({name, ...v}))
+        .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
+    }
+
+    function renderOverall(tbodyId, rows){
+      const tb = document.getElementById(tbodyId);
+      tb.innerHTML = "";
+      if(rows.length===0){
+        tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません（スプシに追記してね）</td></tr>`;
+        return;
+      }
+      addTiedRanks(rows).forEach(r=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="rank"><span class="${badgeClass(r.rank)}"><span class="mono">#${r.rank}</span></span></td>
+          <td class="mono">${r.rank}</td>
           <td>${r.name}</td>
           <td class="right mono">${r.pt}</td>
           <td class="right mono">${r.wins}</td>
@@ -442,144 +394,190 @@
       });
     }
 
-    content.appendChild(table);
-    wrap.appendChild(h2);
-    wrap.appendChild(content);
-    document.getElementById(targetId).appendChild(wrap);
-  }
+    function renderModeCard(targetId, title, rows){
+      const wrap = document.createElement("div");
+      wrap.className = "card";
 
-  // CSV読み込み → events化
-  async function loadEventsFromSheet(){
-    const url = SPREADSHEET_CSV_URL + (SPREADSHEET_CSV_URL.includes("?") ? "&" : "?") + "v=" + Date.now();
-    const res = await fetch(url);
-    if(!res.ok) throw new Error("CSV fetch failed: " + res.status);
+      const h2 = document.createElement("h2");
+      const left = document.createElement("span");
+      left.textContent = title;
+      const right = document.createElement("span");
+      right.className = "tag";
+      right.innerHTML = `<span style="color:var(--accent2)">◆</span> best`;
+      h2.appendChild(left);
+      h2.appendChild(right);
 
-    const csv = await res.text();
-    const rows = parseCSV(csv);
+      const content = document.createElement("div");
+      content.style.overflow = "auto";
 
-    const data = rows.slice(1)
-      .map(r => ({
-        date: (r[0] || "").trim(),
-        tournament: (r[1] || "").trim(),
-        type: (r[2] || "").trim(),
-        mode: (r[3] || "").trim(),
-        note: (r[4] || "").trim(),
-        rank: Number((r[5] || "").trim()),
-        p1: (r[6] || "").trim(),
-        p2: (r[7] || "").trim(),
-      }))
-      .filter(r =>
-        r.date && r.tournament &&
-        (r.type==="singles" || r.type==="doubles") &&
-        (r.mode==="fever" || r.mode==="classic") &&
-        Number.isFinite(r.rank)
-      );
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th class="rank">順位</th>
+            <th>プレイヤー</th>
+            <th class="right">pt</th>
+            <th class="right">優勝</th>
+            <th class="right">出場</th>
+          </tr>
+        </thead>
+        <tbody></tbody>`;
+      const tb = table.querySelector("tbody");
 
-    const map = new Map();
-    for(const r of data){
-      const key = [r.date, r.tournament, r.type, r.mode, r.note].join("||");
-      if(!map.has(key)){
-        map.set(key, {date:r.date, tournament:r.tournament, type:r.type, mode:r.mode, note:r.note, results:[]});
-      }
-      const e = map.get(key);
-      if(r.type==="singles"){
-        if(r.p1) e.results.push({rank:r.rank, player:r.p1});
+      const top = rows.slice(0,8);
+      if(top.length===0){
+        tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません（スプシに追記してね）</td></tr>`;
       }else{
-        if(r.p1 && r.p2) e.results.push({rank:r.rank, p1:r.p1, p2:r.p2});
+        addTiedRanks(top).forEach(r=>{
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="rank"><span class="${badgeClass(r.rank)}"><span class="mono">#${r.rank}</span></span></td>
+            <td>${r.name}</td>
+            <td class="right mono">${r.pt}</td>
+            <td class="right mono">${r.wins}</td>
+            <td class="right mono">${r.plays}</td>`;
+          tb.appendChild(tr);
+        });
       }
+
+      content.appendChild(table);
+      wrap.appendChild(h2);
+      wrap.appendChild(content);
+      document.getElementById(targetId).appendChild(wrap);
     }
 
-    const ev = Array.from(map.values());
-    ev.forEach(e => e.results.sort((a,b)=>a.rank-b.rank));
-    ev.sort((a,b)=> (a.date > b.date ? 1 : -1));
-    return ev;
-  }
+    // CSV読み込み → events化
+    async function loadEventsFromSheet(){
+      const url = SPREADSHEET_CSV_URL + (SPREADSHEET_CSV_URL.includes("?") ? "&" : "?") + "v=" + Date.now();
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("CSV fetch failed: " + res.status);
 
-  function parseCSV(text){
-    const out = [];
-    let row = [];
-    let cur = "";
-    let inQ = false;
+      const csv = await res.text();
+      const rows = parseCSV(csv);
 
-    for(let i=0;i<text.length;i++){
-      const c = text[i];
-      const n = text[i+1];
+      const data = rows.slice(1)
+        .map(r => ({
+          date: (r[0] || "").trim(),
+          tournament: (r[1] || "").trim(),
+          type: (r[2] || "").trim(),
+          mode: (r[3] || "").trim(),
+          note: (r[4] || "").trim(),
+          rank: Number((r[5] || "").trim()),
+          p1: (r[6] || "").trim(),
+          p2: (r[7] || "").trim(),
+        }))
+        .filter(r =>
+          r.date && r.tournament &&
+          (r.type==="singles" || r.type==="doubles") &&
+          (r.mode==="fever" || r.mode==="classic") &&
+          Number.isFinite(r.rank)
+        );
 
-      if(inQ){
-        if(c === '"' && n === '"'){ cur += '"'; i++; }
-        else if(c === '"'){ inQ = false; }
-        else { cur += c; }
-      }else{
-        if(c === '"'){ inQ = true; }
-        else if(c === ","){ row.push(cur); cur = ""; }
-        else if(c === "\n"){
-          row.push(cur); out.push(row);
-          row = []; cur = "";
-        }else if(c === "\r"){
+      const map = new Map();
+      for(const r of data){
+        const key = [r.date, r.tournament, r.type, r.mode, r.note].join("||");
+        if(!map.has(key)){
+          map.set(key, {date:r.date, tournament:r.tournament, type:r.type, mode:r.mode, note:r.note, results:[]});
+        }
+        const e = map.get(key);
+        if(r.type==="singles"){
+          if(r.p1) e.results.push({rank:r.rank, player:r.p1});
         }else{
-          cur += c;
+          if(r.p1 && r.p2) e.results.push({rank:r.rank, p1:r.p1, p2:r.p2});
         }
       }
+
+      const ev = Array.from(map.values());
+      ev.forEach(e => e.results.sort((a,b)=>a.rank-b.rank));
+      ev.sort((a,b)=> (a.date < b.date ? 1 : -1)); // 新しい日付が先
+      return ev;
     }
-    if(cur.length || row.length){ row.push(cur); out.push(row); }
-    return out;
-  }
 
-  // 画面描画
-  function init(){
-    // tabs
-    const tabsWrap = $("#tabs");
-    tabsWrap.innerHTML = "";
-    tabs.forEach(t=>{
-      const el = document.createElement("div");
-      el.className = "tab" + (t.key==="singles" ? " active" : "");
-      el.id = "tab_"+t.key;
-      el.textContent = t.label;
-      el.onclick = ()=>setActiveTab(t.key);
-      tabsWrap.appendChild(el);
-    });
+    function parseCSV(text){
+      const out = [];
+      let row = [];
+      let cur = "";
+      let inQ = false;
 
-    // pill
-    $("#pointsLabel").textContent = pointsLabel();
-    updatePill("singles");
+      for(let i=0;i<text.length;i++){
+        const c = text[i];
+        const n = text[i+1];
 
-    // updated
-    const now = new Date().toISOString().slice(0,19).replace("T"," ");
-    $("#updatedAtS").textContent = now;
-    $("#updatedAtD").textContent = now;
-
-    // latest
-    $("#latestSinglesFever").textContent   = podiumText("singles","fever");
-    $("#latestSinglesClassic").textContent = podiumText("singles","classic");
-    $("#latestDoublesFever").textContent   = podiumText("doubles","fever");
-    $("#latestDoublesClassic").textContent = podiumText("doubles","classic");
-
-    // overall
-    renderOverall("singlesOverall", computeStats("singles"));
-    renderOverall("doublesOverall", computeStats("doubles"));
-
-    // mode boards
-    $("#singlesBoards").innerHTML = "";
-    $("#doublesBoards").innerHTML = "";
-
-    renderModeCard("singlesBoards", "フィーバー｜シングルス（累計上位）", computeModeStats("singles","fever"));
-    renderModeCard("singlesBoards", "クラシック｜シングルス（累計上位）", computeModeStats("singles","classic"));
-
-    renderModeCard("doublesBoards", "フィーバー｜ダブルス（個人累計上位）", computeModeStats("doubles","fever"));
-    renderModeCard("doublesBoards", "クラシック｜ダブルス（個人累計上位）", computeModeStats("doubles","classic"));
-  }
-
-  // 起動：スプシ読んでから描画
-  (async () => {
-    try{
-      events = await loadEventsFromSheet();
-      init();
-    }catch(err){
-      console.error(err);
-      alert("スプシ読み込みに失敗：CSV公開URL/公開設定を確認してね");
-      init(); // 空でも画面は出す
+        if(inQ){
+          if(c === '"' && n === '"'){ cur += '"'; i++; }
+          else if(c === '"'){ inQ = false; }
+          else { cur += c; }
+        }else{
+          if(c === '"'){ inQ = true; }
+          else if(c === ","){ row.push(cur); cur = ""; }
+          else if(c === "\n"){
+            row.push(cur); out.push(row);
+            row = []; cur = "";
+          }else if(c === "\r"){
+          }else{
+            cur += c;
+          }
+        }
+      }
+      if(cur.length || row.length){ row.push(cur); out.push(row); }
+      return out;
     }
-  })();
-</script>
+
+    // 画面描画
+    function init(){
+      // tabs
+      const tabsWrap = $("#tabs");
+      tabsWrap.innerHTML = "";
+      tabs.forEach(t=>{
+        const el = document.createElement("div");
+        el.className = "tab" + (t.key==="singles" ? " active" : "");
+        el.id = "tab_"+t.key;
+        el.textContent = t.label;
+        el.onclick = ()=>setActiveTab(t.key);
+        tabsWrap.appendChild(el);
+      });
+
+      // pill
+      $("#pointsLabel").textContent = pointsLabel();
+      updatePill("singles");
+
+      // updated
+      const now = new Date().toISOString().slice(0,19).replace("T"," ");
+      $("#updatedAtS").textContent = now;
+      $("#updatedAtD").textContent = now;
+
+      // latest
+      $("#latestSinglesFever").textContent   = podiumText("singles","fever");
+      $("#latestSinglesClassic").textContent = podiumText("singles","classic");
+      $("#latestDoublesFever").textContent   = podiumText("doubles","fever");
+      $("#latestDoublesClassic").textContent = podiumText("doubles","classic");
+
+      // overall
+      renderOverall("singlesOverall", computeStats("singles"));
+      renderOverall("doublesOverall", computeStats("doubles"));
+
+      // mode boards
+      $("#singlesBoards").innerHTML = "";
+      $("#doublesBoards").innerHTML = "";
+
+      renderModeCard("singlesBoards", "フィーバー｜シングルス（累計上位）", computeModeStats("singles","fever"));
+      renderModeCard("singlesBoards", "クラシック｜シングルス（累計上位）", computeModeStats("singles","classic"));
+
+      renderModeCard("doublesBoards", "フィーバー｜ダブルス（個人累計上位）", computeModeStats("doubles","fever"));
+      renderModeCard("doublesBoards", "クラシック｜ダブルス（個人累計上位）", computeModeStats("doubles","classic"));
+    }
+
+    // 起動：スプシ読んでから描画
+    (async () => {
+      try{
+        events = await loadEventsFromSheet();
+        init();
+      }catch(err){
+        console.error(err);
+        alert("スプシ読み込みに失敗：CSV公開URL/公開設定を確認してね");
+        init(); // 空でも画面は出す
+      }
+    })();
+  </script>
 </body>
 </html>
