@@ -1337,9 +1337,14 @@ function openTournamentModal(e){
 const hideZero = document.getElementById("tourHideZero");
 const raw = (e.results || []).slice().sort((a,b)=>a.rank-b.rank);
 
+const getPt = (r)=>{
+  if(e.type === "singles") return singlesPoints[r.rank] ?? 0;
+  return doublesPerPerson(r.rank) ?? 0;
+};
+
 const pick = ()=> {
   const hz = hideZero ? hideZero.checked : true;
-  return hz ? raw.filter(x => x.rank !== 0) : raw;
+  return hz ? raw.filter(x => getPt(x) > 0) : raw;   // ★pt=0 を隠す
 };
 
 const renderBody = ()=>{
