@@ -618,6 +618,36 @@ function updatePill(activeKey){
       return `${e.date}　${e.tournament}　1位 ${nameAtRank(1)}　2位 ${nameAtRank(2)}　3位 ${nameAtRank(3)}`;
     }
 
+function formatNameForEvent(e, r){
+  if(!r) return "—";
+  if(e.type === "singles") return r.player || "—";
+  return `${r.p1 || "—"}/${r.p2 || "—"}`;
+}
+
+function getEventSummary(e){
+  const results = (e.results || []);
+
+  // 参加人数（シングル=人数、ダブル=チーム数）
+  const participants = results.length;
+
+  // 優勝者（rank===1）
+  const winRow = results.find(x => x.rank === 1);
+  const winner = formatNameForEvent(e, winRow);
+
+  // 0pt扱い（順位0を想定）※あなたの「参加回数だけ残す」運用に対応
+  const zeroCount = results.filter(x => x.rank === 0).length;
+
+  // 表示用テキスト
+  const unit = (e.type === "singles") ? "人" : "組";
+  return {
+    participants,
+    participantsText: `${participants}${unit}`,
+    winner,
+    zeroCount,
+    zeroText: `${zeroCount}${unit}`,
+  };
+}
+
     // 総合
     function computeStats(type){
       const map = new Map();
@@ -1298,37 +1328,58 @@ function openTournamentModal(e){
   title.textContent = `${e.tournament}${e.note ? `（${e.note}）` : ""}`;
   sub.textContent = `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)}`;
 
+  const sum = getEventSummary(e);
+  const zeroNote = sum.zeroCount > 0 ? ` / 0pt:${sum.zeroText}` : "";
+  sub.textContent = `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)} / 参加:${sum.participantsText} / 優勝:${sum.winner}${zeroNote}`;
+
   body.innerHTML = "";
-  const results = (e.results || []).slice().sort((a,b)=>a.rank-b.rank);
+
+const hideZero = document.getElementById("tourHideZero");
+const raw = (e.results || []).slice().sort((a,b)=>a.rank-b.rank);
+
+const pick = ()=> {
+  const hz = hideZero ? hideZero.checked : true;
+  return hz ? raw.filter(x => x.rank !== 0) : raw;
+};
+
+const renderBody = ()=>{
+  body.innerHTML = "";
+  const results = pick();
 
   if(results.length === 0){
     body.innerHTML = `<tr><td colspan="4" class="muted">結果なし</td></tr>`;
-  }else{
-    results.forEach(r=>{
-      const tr = document.createElement("tr");
-
-      if(e.type === "singles"){
-        const pt = singlesPoints[r.rank] ?? 0;
-        tr.innerHTML = `
-          <td class="mono">${r.rank}</td>
-          <td>${r.player || "—"}</td>
-          <td class="right mono">${pt}</td>
-          <td class="muted">—</td>
-        `;
-      }else{
-        const pt = doublesPerPerson(r.rank);
-        // 1行にペア表示（個人ではなく “結果” として）
-        tr.innerHTML = `
-          <td class="mono">${r.rank}</td>
-          <td>${(r.p1||"—")}</td>
-          <td class="right mono">${pt}</td>
-          <td>${(r.p2||"—")}</td>
-        `;
-      }
-
-      body.appendChild(tr);
-    });
+    return;
   }
+
+  results.forEach(r=>{
+    const tr = document.createElement("tr");
+
+    if(e.type === "singles"){
+      const pt = singlesPoints[r.rank] ?? 0;
+      tr.innerHTML = `
+        <td class="mono">${r.rank}</td>
+        <td>${r.player || "—"}</td>
+        <td class="right mono">${pt}</td>
+        <td class="muted">—</td>
+      `;
+    }else{
+      const pt = doublesPerPerson(r.rank) ?? 0;
+      tr.innerHTML = `
+        <td class="mono">${r.rank}</td>
+        <td>${(r.p1||"—")}</td>
+        <td class="right mono">${pt}</td>
+        <td>${(r.p2||"—")}</td>
+      `;
+    }
+
+    body.appendChild(tr);
+  });
+};
+
+renderBody();
+if(hideZero){
+  hideZero.onchange = ()=> renderBody();
+}
 
   const close = ()=>{
     modal.style.display = "none";
@@ -1397,6 +1448,12 @@ function setupTournamentsTab(){
     </div>
 
     <div style="padding:10px 12px;">
+
+<label class="muted" style="display:inline-flex; gap:6px; align-items:center; font-size:12px; margin-bottom:8px;">
+  <input id="tourHideZero" type="checkbox" checked>
+  0pt（順位0）を隠す
+</label>
+
       <div class="scrollBox" style="max-height:70vh; border-top:none;">
         <table>
           <thead>
