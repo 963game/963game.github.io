@@ -502,27 +502,23 @@
       return "badge";
     }
 
-    function pointsLabel(){
-      const s = [];
-      for(let r=1;r<=8;r++) s.push(`${r}位:${singlesPoints[r]}`);
-      return s.join(" / ");
-    }
+function pointsLabel(){
+  return "1:20 2:16 3:12 4:10 5:8 6:6 7:4 8:2";
+}
 
-    function splitExamples(){
-      return `分配：1位 ${doublesTeamPoints[1]}→${doublesPerPerson(1)}+${doublesPerPerson(1)} / 4位 ${doublesTeamPoints[4]}→${doublesPerPerson(4)}+${doublesPerPerson(4)} / 8位 ${doublesTeamPoints[8]}→${doublesPerPerson(8)}+${doublesPerPerson(8)}`;
-    }
+// splitExamplesはもう使わないから消してOK（残してもOK）
 
-    function updatePill(activeKey){
-      const base = `配点：${pointsLabel()}`;
-      const pill = $("#pillText");
-      if(activeKey==="doubles"){
-        pill.textContent = `${base} ｜ ${splitExamples()}`;
-        pill.title = "ダブルスはチームptを2人に等分して個人に加算";
-      }else{
-        pill.textContent = base;
-        pill.title = "シングルス配点";
-      }
-    }
+function updatePill(activeKey){
+  const pill = $("#pillText");
+
+  if(activeKey==="doubles"){
+    pill.textContent = "配点：1:20 2:16 3:12 4:10 5:8 6:6 7:4 8:2 ｜ D=半分";
+    pill.title = "ダブルスはチームptを2人で等分（例：1位20→10+10）";
+  }else{
+    pill.textContent = "配点：1:20 2:16 3:12 4:10 5:8 6:6 7:4 8:2";
+    pill.title = "シングルス配点";
+  }
+}
 
     // 同ポイントなら同順位（1,1,3…）
     function addTiedRanks(rows){
