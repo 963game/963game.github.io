@@ -231,6 +231,41 @@
         </div>
 
         <div class="twoCol" id="singlesBoards"></div>
+
+<!-- ★全ランキング（シングルス） -->
+<div class="card">
+  <h2>シングルス総合（全順位） <span class="tag"><span style="color:var(--accent2)">◆</span> scroll</span></h2>
+
+  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <input id="singlesSearch" type="text" placeholder="名前検索（部分一致OK）"
+      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <button id="singlesSearchBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+      color:var(--text); cursor:pointer;">
+      ジャンプ
+    </button>
+    <button id="singlesResetBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+      リセット
+    </button>
+  </div>
+
+  <div class="scrollBox" id="singlesRankScroll">
+    <table>
+      <thead>
+        <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+      </thead>
+      <tbody id="singlesRankAll"></tbody>
+    </table>
+    <div id="singlesRankSentinel" style="height:1px;"></div>
+  </div>
+
+  <div id="singlesRankHint" class="muted" style="padding:6px 12px; font-size:12px;"></div>
+</div>
+
       </div>
     </section>
 
@@ -259,6 +294,41 @@
         </div>
 
         <div class="twoCol" id="doublesBoards"></div>
+
+<!-- ★全ランキング（ダブルス） -->
+<div class="card">
+  <h2>ダブルス総合（全順位） <span class="tag"><span style="color:var(--accent2)">◆</span> scroll</span></h2>
+
+  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <input id="doublesSearch" type="text" placeholder="名前検索（部分一致OK）"
+      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <button id="doublesSearchBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+      color:var(--text); cursor:pointer;">
+      ジャンプ
+    </button>
+    <button id="doublesResetBtn" type="button"
+      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+      リセット
+    </button>
+  </div>
+
+  <div class="scrollBox" id="doublesRankScroll">
+    <table>
+      <thead>
+        <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+      </thead>
+      <tbody id="doublesRankAll"></tbody>
+    </table>
+    <div id="doublesRankSentinel" style="height:1px;"></div>
+  </div>
+
+  <div id="doublesRankHint" class="muted" style="padding:6px 12px; font-size:12px;"></div>
+</div>
+
       </div>
     </section>
 
@@ -268,22 +338,59 @@
         <div class="card">
           <h2>個人成績（全員一覧） <span class="tag"><span style="color:var(--accent2)">◆</span> all results</span></h2>
 
-          <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <input id="playerQuery" type="text" placeholder="検索：プレイヤー名（例：kurumi / くるみ / KURUMI）"
-              style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-              background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-            <button id="playerSearchBtn" type="button"
-              style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
-              background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
-              color:var(--text); cursor:pointer;">
-              検索
-            </button>
-            <button id="playerClearBtn" type="button"
-              style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-              background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
-              全員表示に戻す
-            </button>
-          </div>
+<div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; position:relative;">
+  <!-- フィルタ -->
+  <input id="fDateFrom" type="date"
+    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+  <input id="fDateTo" type="date"
+    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+
+  <select id="fTournament"
+    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <option value="">大会：すべて</option>
+  </select>
+
+  <select id="fType"
+    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <option value="">種別：すべて</option>
+    <option value="singles">シングル</option>
+    <option value="doubles">ダブル</option>
+  </select>
+
+  <select id="fMode"
+    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <option value="">モード：すべて</option>
+    <option value="fever">フィーバー</option>
+    <option value="classic">クラシック</option>
+  </select>
+
+  <!-- 検索（単語1つ、候補表示） -->
+  <div style="flex:1; min-width:240px; position:relative;">
+    <input id="playerQuery" type="text" placeholder="検索（プレイヤー名 / 大会名）"
+      style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+
+    <!-- ★候補 -->
+    <div id="suggestBox" style="display:none; position:absolute; z-index:10; left:0; right:0; top:calc(100% + 6px);
+      border:1px solid var(--line); background:rgba(18,24,38,0.98); border-radius:12px; overflow:hidden;
+      box-shadow:0 14px 40px rgba(0,0,0,.45);">
+      <div id="suggestList"></div>
+    </div>
+  </div>
+
+  <button id="playerClearBtn" type="button"
+    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+    リセット
+  </button>
+</div>
+
+<div id="playersHint" class="muted" style="padding:0 12px 8px; font-size:12px;"></div>
 
           <div class="scrollBox">
             <table>
