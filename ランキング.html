@@ -239,39 +239,57 @@
 
 <!-- ★全ランキング（シングルス） -->
 <div class="card">
-  <h2>シングルス総合（全順位） <span class="tag"><span style="color:var(--accent2)">◆</span> scroll</span></h2>
+  <h2>
+    <span>シングルス総合（全順位）</span>
+    <span style="display:flex; gap:8px; align-items:center;">
+      <span class="tag"><span style="color:var(--accent2)">◆</span> scroll</span>
+      <button id="singlesFoldBtn" type="button"
+        style="padding:6px 10px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+        開く
+      </button>
+    </span>
+  </h2>
 
-  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-    <input id="singlesSearch" type="text" placeholder="名前検索（部分一致OK）"
-      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-    <button id="singlesSearchBtn" type="button"
-      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
-      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
-      color:var(--text); cursor:pointer;">
-      ジャンプ
-    </button>
-    <button id="singlesResetBtn" type="button"
-      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
-      リセット
-    </button>
+  <div id="singlesFoldBody" style="display:none;">
+    <div style="padding:10px 12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <input id="singlesSearch" type="text" placeholder="名前検索（部分一致OK）"
+        style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+
+      <label style="display:inline-flex; gap:6px; align-items:center; font-size:12px; color:var(--muted);">
+        <input id="singlesHideZero" type="checkbox" checked>
+        0ptを隠す
+      </label>
+
+      <button id="singlesSearchBtn" type="button"
+        style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+        background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+        color:var(--text); cursor:pointer;">
+        ジャンプ
+      </button>
+
+      <button id="singlesResetBtn" type="button"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+        リセット
+      </button>
+    </div>
+
+    <div class="scrollBox rankScroll" id="singlesRankScroll">
+      <table>
+        <thead>
+          <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+        </thead>
+        <tbody id="singlesRankAll"></tbody>
+      </table>
+      <div id="singlesRankSentinel" style="height:1px;"></div>
+    </div>
+
+    <div id="singlesRankHint" class="muted" style="padding:6px 12px; font-size:12px;"></div>
   </div>
-
-<div class="scrollBox rankBox" id="singlesRankScroll">
-    <table>
-      <thead>
-        <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
-      </thead>
-      <tbody id="singlesRankAll"></tbody>
-    </table>
-    <div id="singlesRankSentinel" style="height:1px;"></div>
-  </div>
-
-  <div id="singlesRankHint" class="muted" style="padding:6px 12px; font-size:12px;"></div>
 </div>
 
-      </div>
     </section>
 
     <!-- Doubles -->
@@ -302,39 +320,57 @@
 
 <!-- ★全ランキング（ダブルス） -->
 <div class="card">
-  <h2>ダブルス総合（全順位） <span class="tag"><span style="color:var(--accent2)">◆</span> scroll</span></h2>
+  <h2>
+    <span>ダブルス総合（全順位）</span>
+    <span style="display:flex; gap:8px; align-items:center;">
+      <span class="tag"><span style="color:var(--accent2)">◆</span> scroll</span>
+      <button id="doublesFoldBtn" type="button"
+        style="padding:6px 10px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+        開く
+      </button>
+    </span>
+  </h2>
 
-  <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-    <input id="doublesSearch" type="text" placeholder="名前検索（部分一致OK）"
-      style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-    <button id="doublesSearchBtn" type="button"
-      style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
-      background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
-      color:var(--text); cursor:pointer;">
-      ジャンプ
-    </button>
-    <button id="doublesResetBtn" type="button"
-      style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
-      リセット
-    </button>
+  <div id="doublesFoldBody" style="display:none;">
+    <div style="padding:10px 12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <input id="doublesSearch" type="text" placeholder="名前検索（部分一致OK）"
+        style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+
+      <label style="display:inline-flex; gap:6px; align-items:center; font-size:12px; color:var(--muted);">
+        <input id="doublesHideZero" type="checkbox" checked>
+        0ptを隠す
+      </label>
+
+      <button id="doublesSearchBtn" type="button"
+        style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+        background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+        color:var(--text); cursor:pointer;">
+        ジャンプ
+      </button>
+
+      <button id="doublesResetBtn" type="button"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+        リセット
+      </button>
+    </div>
+
+    <div class="scrollBox rankScroll" id="doublesRankScroll">
+      <table>
+        <thead>
+          <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+        </thead>
+        <tbody id="doublesRankAll"></tbody>
+      </table>
+      <div id="doublesRankSentinel" style="height:1px;"></div>
+    </div>
+
+    <div id="doublesRankHint" class="muted" style="padding:6px 12px; font-size:12px;"></div>
   </div>
-
-<div class="scrollBox rankBox" id="doublesRankScroll">
-    <table>
-      <thead>
-        <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
-      </thead>
-      <tbody id="doublesRankAll"></tbody>
-    </table>
-    <div id="doublesRankSentinel" style="height:1px;"></div>
-  </div>
-
-  <div id="doublesRankHint" class="muted" style="padding:6px 12px; font-size:12px;"></div>
 </div>
 
-      </div>
     </section>
 
     <!-- Players (個人成績) -->
@@ -1005,6 +1041,9 @@ function setupPlayersTab(){
 setupRankList("singles");
 setupRankList("doubles");
 
+setupFold("singles");
+setupFold("doubles");
+
     }
 
 // ===== 全ランキング（無限スクロール + 検索ジャンプ） =====
@@ -1027,9 +1066,6 @@ function renderRankingChunk(tbody, rows, start, end){
 }
 
 function setupRankList(type){
-  const rowsRaw = computeStats(type);
-  const rows = addTiedRanks(rowsRaw);
-
   const tb = document.getElementById(type==="singles" ? "singlesRankAll" : "doublesRankAll");
   const sentinel = document.getElementById(type==="singles" ? "singlesRankSentinel" : "doublesRankSentinel");
   const hint = document.getElementById(type==="singles" ? "singlesRankHint" : "doublesRankHint");
@@ -1038,31 +1074,56 @@ function setupRankList(type){
   const btn   = document.getElementById(type==="singles" ? "singlesSearchBtn" : "doublesSearchBtn");
   const reset = document.getElementById(type==="singles" ? "singlesResetBtn" : "doublesResetBtn");
 
-  if(!tb || !sentinel || !input || !btn || !reset) return;
+  const hideZero = document.getElementById(type==="singles" ? "singlesHideZero" : "doublesHideZero");
 
-  tb.innerHTML = "";
+  const rootEl = document.getElementById(type==="singles" ? "singlesRankScroll" : "doublesRankScroll");
+
+  if(!tb || !sentinel || !input || !btn || !reset || !rootEl) return;
+
+  let io = null;
+  let rows = [];
   let visible = 0;
-  const step = 12;
+  const step = 8; // ←最初に見せる行数（8行くらい）
 
   const ensureVisible = (count)=>{
     const next = Math.min(count, rows.length);
     if(next <= visible) return;
     renderRankingChunk(tb, rows, visible, next);
     visible = next;
-    hint.textContent = `表示：${visible}/${rows.length}`;
+    if(hint) hint.textContent = `表示：${visible}/${rows.length}`;
   };
 
-  ensureVisible(step);
+  const rebuild = ()=>{
+    if(io) io.disconnect();
 
-  const io = new IntersectionObserver((ents)=>{
-    for(const e of ents){
-      if(e.isIntersecting){
-        ensureVisible(visible + step);
-      }
+    // ①作り直し：0ptを隠す
+    let rowsRaw = computeStats(type);
+    if(hideZero && hideZero.checked){
+      rowsRaw = rowsRaw.filter(r => (r.pt ?? 0) > 0);
     }
-  }, {root: document.getElementById(type==="singles" ? "singlesRankScroll" : "doublesRankScroll")});
 
-  io.observe(sentinel);
+    rows = addTiedRanks(rowsRaw);
+
+    tb.innerHTML = "";
+    visible = 0;
+    ensureVisible(step);
+
+    io = new IntersectionObserver((ents)=>{
+      for(const e of ents){
+        if(e.isIntersecting){
+          ensureVisible(visible + step);
+        }
+      }
+    }, {root: rootEl});
+
+    io.observe(sentinel);
+  };
+
+  rebuild();
+
+  if(hideZero){
+    hideZero.addEventListener("change", ()=> rebuild());
+  }
 
   const jump = ()=>{
     const q = normalizeText(input.value);
@@ -1070,7 +1131,7 @@ function setupRankList(type){
 
     const idx = rows.findIndex(r => normalizeText(r.name).includes(q));
     if(idx < 0){
-hint.textContent = `「${input.value}」は見つからない`;
+      if(hint) hint.textContent = `「${input.value}」は見つからない`;
       return;
     }
 
@@ -1081,7 +1142,7 @@ hint.textContent = `「${input.value}」は見つからない`;
       tr.scrollIntoView({behavior:"smooth", block:"center"});
       tr.style.background = "rgba(184,107,255,0.2)";
       setTimeout(()=> tr.style.background = "transparent", 900);
-      hint.textContent = `#${rows[idx].rank} ${rows[idx].name}`;
+      if(hint) hint.textContent = `#${rows[idx].rank} ${rows[idx].name}`;
     }
   };
 
@@ -1092,9 +1153,20 @@ hint.textContent = `「${input.value}」は見つからない`;
 
   reset.onclick = ()=>{
     input.value = "";
-    const sc = document.getElementById(type==="singles" ? "singlesRankScroll" : "doublesRankScroll");
-    sc.scrollTo({top:0, behavior:"smooth"});
+    rootEl.scrollTo({top:0, behavior:"smooth"});
   };
+}
+
+function setupFold(type){
+  const btn  = document.getElementById(type==="singles" ? "singlesFoldBtn" : "doublesFoldBtn");
+  const body = document.getElementById(type==="singles" ? "singlesFoldBody" : "doublesFoldBody");
+  if(!btn || !body) return;
+
+  btn.addEventListener("click", ()=>{
+    const open = body.style.display !== "none";
+    body.style.display = open ? "none" : "block";
+    btn.textContent = open ? "開く" : "閉じる";
+  });
 }
 
     // 起動：スプシ読んでから描画
