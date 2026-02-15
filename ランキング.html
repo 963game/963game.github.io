@@ -1367,15 +1367,16 @@ const renderBody = ()=>{
         <td class="right mono">${pt}</td>
         <td class="muted">—</td>
       `;
-    }else{
-      const pt = doublesPerPerson(r.rank) ?? 0;
-      tr.innerHTML = `
-        <td class="mono">${r.rank}</td>
-        <td>${(r.p1||"—")}</td>
-        <td class="right mono">${pt}</td>
-        <td>${(r.p2||"—")}</td>
-      `;
-    }
+
+}else{
+  const teamPt = doublesTeamPoints[r.rank] ?? 0;
+
+  tr.innerHTML = `
+    <td class="mono">${r.rank}</td>
+    <td colspan="2">${(r.p1||"—")} / ${(r.p2||"—")}</td>
+    <td class="right mono">${teamPt}</td>
+  `;
+}
 
     body.appendChild(tr);
   });
@@ -1464,9 +1465,8 @@ function setupTournamentsTab(){
           <thead>
             <tr>
               <th>順位</th>
-              <th>プレイヤー</th>
+              <th colspan="2">ペア</th>
               <th class="right">pt</th>
-              <th>相方</th>
             </tr>
           </thead>
           <tbody id="tourModalBody"></tbody>
@@ -1481,4 +1481,3 @@ function setupTournamentsTab(){
 
 </body>
 </html>
-
