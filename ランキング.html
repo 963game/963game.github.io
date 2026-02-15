@@ -104,7 +104,7 @@
     th{color:var(--muted);font-weight:600;font-size:12px}
     tr:last-child td{border-bottom:none}
 
-    .rank{width:68px;font-variant-numeric:tabular-nums}
+    .rank{width:64px;font-variant-numeric:tabular-nums}
     .right{text-align:right}
     .mono{
       font-variant-numeric:tabular-nums;
@@ -112,28 +112,16 @@
     }
     .muted{color:var(--muted)}
 
-    .badge{
-     padding:3px 6px;
-     border-radius:999px;
-     border:1px solid rgba(159,176,208,0.16);
-     background:rgba(159,176,208,0.04);
-     font-size:11px;
-     letter-spacing:.2px;
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid rgba(159,176,208,0.25);
+  background:rgba(159,176,208,0.08);
+  font-size:12px;
 }
-
-    .r1{
-     border-color:rgba(255,213,106,0.42);
-     background:rgba(255,213,106,0.06);
-}
-    .r2{
-     border-color:rgba(199,210,254,0.42);
-     background:rgba(199,210,254,0.055);
-}
-    .r3{
-     border-color:rgba(242,179,143,0.40);
-     background:rgba(242,179,143,0.055);
-}
-
 
     .row{display:none}
     .row.active{display:block}
@@ -298,7 +286,6 @@
 .pRow-left{ display:flex; flex-direction:column; gap:2px; }
 .pRow-main{ font-weight:600; }
 .pRow-sub{ font-size:12px; opacity:.75; }
-.badge{ font-size: 12px; opacity: .9; white-space: nowrap; }
 
 .player-link{
   cursor: pointer;
@@ -678,12 +665,6 @@ const tabs = [
       return "badge";
     }
 
-function rankBadge(rank){
-  const r = Number(rank);
-  if(!Number.isFinite(r)) return "—";
-  return `<span class="${badgeClass(r)}"><span class="mono">${r}</span></span>`;
-}
-
 function pointsLabel(){
   return "1:20 2:16 3:12 4:10 5:8 6:6 7:4 8:2";
 }
@@ -839,7 +820,7 @@ function getEventSummary(e){
       addTiedRanks(top8).forEach(r=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="rank">${rankBadge(r.rank)}</td>
+          <td class="mono">${r.rank}</td>
           <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
           <td class="right mono">${r.pt}</td>
           <td class="right mono">${r.wins}</td>
@@ -1055,7 +1036,7 @@ function normalizeText(s){
           <td>${x.tournament}</td>
           <td>${x.type === "singles" ? "シングル" : "ダブル"}</td>
           <td>${x.mode === "fever" ? "フィーバー" : "クラシック"}</td>
-          <td class="rank">${rankBadge(x.rank)}</td>
+          <td class="mono">${x.rank}</td>
           <td>${x.partner || "—"}</td>
           <td class="right mono">${x.pt}</td>
           <td>${x.player ? `<span class="player-link" data-player="${escapeHtml(x.player)}">${escapeHtml(x.player)}</span>` : "—"}</td>
@@ -1507,7 +1488,7 @@ const renderBody = ()=>{
     if(e.type === "singles"){
       const pt = singlesPoints[r.rank] ?? 0;
       tr.innerHTML = `
-        <td class="rank">${rankBadge(r.rank)}</td>
+        <td class="mono">${r.rank}</td>
         <td>${r.player || "—"}</td>
         <td class="right mono">${pt}</td>
         <td class="muted">—</td>
@@ -1517,7 +1498,7 @@ const renderBody = ()=>{
   const teamPt = doublesTeamPoints[r.rank] ?? 0;
 
   tr.innerHTML = `
-    <td class="rank">${rankBadge(r.rank)}</td>
+    <td class="mono">${r.rank}</td>
     <td colspan="2">${(r.p1||"—")} / ${(r.p2||"—")}</td>
     <td class="right mono">${teamPt}</td>
   `;
