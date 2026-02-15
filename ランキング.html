@@ -206,6 +206,94 @@
   }
 }
 
+/* ===== modal 基本（プレイヤー用）===== */
+.modal{
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 18px 12px;
+}
+.modal.hidden{ display:none; }
+
+.modal-overlay{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.62);
+}
+
+.modal-box{
+  position: relative;
+  width: min(980px, 100%);
+  border: 1px solid var(--line);
+  background: rgba(18,24,38,0.96);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  overflow: hidden;
+}
+
+.modal-close{
+  position:absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(18,24,38,0.65);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.modal-head{
+  padding: 12px 12px 10px;
+  border-bottom: 1px solid rgba(35,48,74,0.75);
+}
+.modal-title{
+  margin:0;
+  font-size: 13px;
+  letter-spacing: .25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.modal-sub{
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.modal-body{
+  padding: 10px 12px;
+  max-height: 70vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== player modal 内部 ===== */
+.section{ margin-top: 14px; }
+.section-title{ font-size: 12px; color: var(--muted); margin: 0 0 8px; }
+.list{ display: grid; gap: 8px; }
+
+.row{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+}
+.row-left{ display:flex; flex-direction:column; gap:2px; }
+.row-main{ font-weight: 600; }
+.row-sub{ font-size: 12px; opacity: .75; }
+.badge{ font-size: 12px; opacity: .9; white-space: nowrap; }
+
+.player-link{
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
   </style>
 </head>
 
@@ -719,7 +807,7 @@ function getEventSummary(e){
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="mono">${r.rank}</td>
-          <td>${r.name}</td>
+          <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
           <td class="right mono">${r.pt}</td>
           <td class="right mono">${r.wins}</td>
           <td class="right mono">${r.plays}</td>`;
@@ -765,7 +853,7 @@ function getEventSummary(e){
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td class="rank"><span class="${badgeClass(r.rank)}"><span class="mono">#${r.rank}</span></span></td>
-            <td>${r.name}</td>
+            <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
             <td class="right mono">${r.pt}</td>
             <td class="right mono">${r.wins}</td>
             <td class="right mono">${r.plays}</td>`;
@@ -937,7 +1025,7 @@ function normalizeText(s){
           <td class="mono">${x.rank}</td>
           <td>${x.partner || "—"}</td>
           <td class="right mono">${x.pt}</td>
-          <td>${x.player || "—"}</td>
+          <td>${x.player ? `<span class="player-link" data-player="${escapeHtml(x.player)}">${escapeHtml(x.player)}</span>` : "—"}</td>
         `;
         tb.appendChild(tr);
       });
@@ -1147,7 +1235,7 @@ function renderRankingChunk(tbody, rows, start, end){
     tr.dataset.idx = String(i);
     tr.innerHTML = `
       <td class="mono">${r.rank}</td>
-      <td>${r.name}</td>
+      <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
       <td class="right mono">${r.pt}</td>
       <td class="right mono">${r.wins}</td>
       <td class="right mono">${r.plays}</td>`;
@@ -1420,10 +1508,166 @@ function setupTournamentsTab(){
   if(m) m.addEventListener("change", ()=> renderTournaments());
 }
 
+// ===== Player Modal (index) =====
+let playerIndex = {};
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function buildPlayerIndexFromEvents(events){
+  const index = {};
+
+  for(const e of (events || [])){
+    for(const r of (e.results || [])){
+      const rank = Number(r.rank ?? 0);
+      const pt = pointsForResult(e.type, rank);
+
+      if(e.type === "singles"){
+        const name = (r.player || "").trim();
+        if(!name) continue;
+
+        (index[name] ||= []).push({
+          date: e.date, tournament: e.tournament, type: e.type, mode: e.mode,
+          format: e.format || "", rank, pt, partner: null
+        });
+
+      }else{
+        const p1 = (r.p1 || "").trim();
+        const p2 = (r.p2 || "").trim();
+        if(!p1 || !p2) continue;
+
+        (index[p1] ||= []).push({
+          date: e.date, tournament: e.tournament, type: e.type, mode: e.mode,
+          format: e.format || "", rank, pt, partner: p2
+        });
+        (index[p2] ||= []).push({
+          date: e.date, tournament: e.tournament, type: e.type, mode: e.mode,
+          format: e.format || "", rank, pt, partner: p1
+        });
+      }
+    }
+  }
+
+  // 新しい順
+  for(const name in index){
+    index[name].sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+  }
+  return index;
+}
+
+function renderEntryRow(x){
+  const typeJ = x.type==="singles" ? "シングル" : "ダブル";
+  const modeJ = x.mode==="fever" ? "フィーバー" : "クラシック";
+  const fmtJ =
+    x.format==="rr" ? "総当たり" :
+    x.format==="tn" ? "トナメ" :
+    (x.format || "—");
+
+  const sub = `${x.date} / ${typeJ} / ${modeJ} / 形式:${fmtJ}` + (x.partner ? ` / 相方:${x.partner}` : "");
+  const badge = `${x.rank}位 / ${x.pt}pt`;
+
+  return `
+    <div class="row">
+      <div class="row-left">
+        <div class="row-main">${escapeHtml(x.tournament || "")}</div>
+        <div class="row-sub">${escapeHtml(sub)}</div>
+      </div>
+      <div class="badge">${escapeHtml(badge)}</div>
+    </div>
+  `;
+}
+
+function closePlayerModal(){
+  const m = document.getElementById("playerModal");
+  if(!m) return;
+  m.classList.add("hidden");
+  m.setAttribute("aria-hidden","true");
+}
+
+function openPlayerModal(name){
+  const m = document.getElementById("playerModal");
+  const title = document.getElementById("playerTitle");
+  const summary = document.getElementById("playerSummary");
+  const recent = document.getElementById("playerRecent");
+  const all = document.getElementById("playerAll");
+  const pairsWrap = document.getElementById("playerPairsWrap");
+  const pairsEl = document.getElementById("playerPairs");
+
+  if(!m || !title || !summary || !recent || !all || !pairsWrap || !pairsEl) return;
+
+  const list = playerIndex[name] || [];
+  title.textContent = name;
+
+  const appearances = list.length;
+  const wins = list.filter(x=>x.rank===1).length;
+  const runner = list.filter(x=>x.rank===2).length;
+  const third = list.filter(x=>x.rank===3).length;
+
+  summary.textContent = `出場 ${appearances} / 優勝 ${wins} / 準優勝 ${runner} / 3位 ${third}`;
+
+  const recentList = list.slice(0,5);
+  recent.innerHTML = recentList.length ? recentList.map(renderEntryRow).join("") :
+    `<div class="row"><div class="row-left"><div class="row-main">記録なし</div></div></div>`;
+
+  all.innerHTML = list.length ? list.map(renderEntryRow).join("") :
+    `<div class="row"><div class="row-left"><div class="row-main">記録なし</div></div></div>`;
+
+  // ペア履歴
+  const pairCounts = {};
+  for(const x of list){
+    if(x.partner){
+      pairCounts[x.partner] = (pairCounts[x.partner] || 0) + 1;
+    }
+  }
+  const pairArr = Object.entries(pairCounts).sort((a,b)=>b[1]-a[1]);
+
+  if(pairArr.length){
+    pairsWrap.style.display = "";
+    pairsEl.innerHTML = pairArr.map(([partner,count])=>`
+      <div class="row">
+        <div class="row-left">
+          <div class="row-main"><span class="player-link" data-player="${escapeHtml(partner)}">${escapeHtml(partner)}</span></div>
+          <div class="row-sub">一緒に組んだ回数</div>
+        </div>
+        <div class="badge">${count}回</div>
+      </div>
+    `).join("");
+  }else{
+    pairsWrap.style.display = "none";
+    pairsEl.innerHTML = "";
+  }
+
+  m.classList.remove("hidden");
+  m.setAttribute("aria-hidden","false");
+}
+
+// クリック：data-player が付いてる要素ならどこでも開く
+document.addEventListener("click", (e)=>{
+  const el = e.target.closest("[data-player]");
+  if(!el) return;
+  const name = el.getAttribute("data-player");
+  if(name) openPlayerModal(name);
+});
+
+// 閉じる
+document.addEventListener("click", (e)=>{
+  const el = e.target.closest("[data-close='player']");
+  if(el) closePlayerModal();
+});
+
     // 起動：スプシ読んでから描画
     (async () => {
       try{
         events = await loadEventsFromSheet();
+        playerIndex = buildPlayerIndexFromEvents(events); // ★追加
+        init();
+
         init();
       }catch(err){
         console.error(err);
@@ -1431,6 +1675,7 @@ function setupTournamentsTab(){
         init(); // 空でも画面は出す
       }
     })();
+
   </script>
 
 <!-- ★大会 詳細モーダル -->
@@ -1485,6 +1730,37 @@ function setupTournamentsTab(){
       </div>
       <div class="muted" style="font-size:11px; padding:6px 2px 0; opacity:.7;">
         ※ダブルスは個人表示（相方付き）
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== プレイヤー詳細モーダル ===== -->
+<div id="playerModal" class="modal hidden" aria-hidden="true">
+  <div class="modal-overlay" data-close="player"></div>
+
+  <div class="modal-box">
+    <button class="modal-close" data-close="player">×</button>
+
+    <div class="modal-head">
+      <h2 id="playerTitle" class="modal-title">Player</h2>
+      <div id="playerSummary" class="modal-sub"></div>
+    </div>
+
+    <div class="modal-body">
+      <div class="section">
+        <h3 class="section-title">最近の出場</h3>
+        <div id="playerRecent" class="list"></div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">出場大会一覧</h3>
+        <div id="playerAll" class="list"></div>
+      </div>
+
+      <div class="section" id="playerPairsWrap" style="display:none;">
+        <h3 class="section-title">ペア履歴</h3>
+        <div id="playerPairs" class="list"></div>
       </div>
     </div>
   </div>
