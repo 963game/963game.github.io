@@ -149,11 +149,48 @@
       background-clip: content-box;
     }
 
-    /* 個人成績：長い一覧をスクロールできる枠 */
-    .scrollBox{
-      max-height: 65vh;
-      overflow:auto;
-    }
+/* 個人成績：長い一覧をスクロールできる枠（置き換え推奨） */
+.scrollBox{
+  max-height: 65vh;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  border-top: 1px solid rgba(35,48,74,0.55);
+}
+
+/* Firefox */
+.scrollBox{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159,176,208,0.35) transparent;
+}
+
+/* Chrome / Edge / Safari */
+.scrollBox::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+}
+.scrollBox::-webkit-scrollbar-track{
+  background: transparent;
+}
+.scrollBox::-webkit-scrollbar-thumb{
+  background: rgba(159,176,208,0.22);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scrollBox::-webkit-scrollbar-thumb:hover{
+  background: rgba(159,176,208,0.35);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* フェード（スクロールできる雰囲気を上品に） */
+.scrollBox{
+  position: relative;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+
   </style>
 </head>
 
