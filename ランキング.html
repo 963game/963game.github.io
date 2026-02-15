@@ -104,7 +104,7 @@
     th{color:var(--muted);font-weight:600;font-size:12px}
     tr:last-child td{border-bottom:none}
 
-    .rank{width:64px;font-variant-numeric:tabular-nums}
+    .rank{width:72px;font-variant-numeric:tabular-nums}
     .right{text-align:right}
     .mono{
       font-variant-numeric:tabular-nums;
@@ -666,6 +666,12 @@ const tabs = [
       return "badge";
     }
 
+function rankBadge(rank){
+  const r = Number(rank);
+  if(!Number.isFinite(r)) return "—";
+  return `<span class="${badgeClass(r)}"><span class="mono">#${r}</span></span>`;
+}
+
 function pointsLabel(){
   return "1:20 2:16 3:12 4:10 5:8 6:6 7:4 8:2";
 }
@@ -814,14 +820,14 @@ function getEventSummary(e){
       const tb = document.getElementById(tbodyId);
       tb.innerHTML = "";
       if(rows.length===0){
-        tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません（スプシに追記してね）</td></tr>`;
+        tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません</td></tr>`;
         return;
       }
       const top8 = rows.slice(0,8);
       addTiedRanks(top8).forEach(r=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="mono">${r.rank}</td>
+          <td class="rank">${rankBadge(r.rank)}</td>
           <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
           <td class="right mono">${r.pt}</td>
           <td class="right mono">${r.wins}</td>
@@ -862,7 +868,7 @@ function getEventSummary(e){
 
       const top = rows.slice(0,8);
       if(top.length===0){
-        tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません（スプシに追記してね）</td></tr>`;
+        tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
       }else{
         addTiedRanks(top).forEach(r=>{
           const tr = document.createElement("tr");
@@ -1037,7 +1043,7 @@ function normalizeText(s){
           <td>${x.tournament}</td>
           <td>${x.type === "singles" ? "シングル" : "ダブル"}</td>
           <td>${x.mode === "fever" ? "フィーバー" : "クラシック"}</td>
-          <td class="mono">${x.rank}</td>
+          <td class="rank">${rankBadge(x.rank)}</td>
           <td>${x.partner || "—"}</td>
           <td class="right mono">${x.pt}</td>
           <td>${x.player ? `<span class="player-link" data-player="${escapeHtml(x.player)}">${escapeHtml(x.player)}</span>` : "—"}</td>
@@ -1489,7 +1495,7 @@ const renderBody = ()=>{
     if(e.type === "singles"){
       const pt = singlesPoints[r.rank] ?? 0;
       tr.innerHTML = `
-        <td class="mono">${r.rank}</td>
+        <td class="rank">${rankBadge(r.rank)}</td>
         <td>${r.player || "—"}</td>
         <td class="right mono">${pt}</td>
         <td class="muted">—</td>
@@ -1499,7 +1505,7 @@ const renderBody = ()=>{
   const teamPt = doublesTeamPoints[r.rank] ?? 0;
 
   tr.innerHTML = `
-    <td class="mono">${r.rank}</td>
+    <td class="rank">${rankBadge(r.rank)}</td>
     <td colspan="2">${(r.p1||"—")} / ${(r.p2||"—")}</td>
     <td class="right mono">${teamPt}</td>
   `;
