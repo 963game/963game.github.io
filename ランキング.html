@@ -475,91 +475,106 @@
     <section id="players" class="row">
       <div class="stack">
         <div class="card">
-          <h2>個人成績（全員一覧） <span class="tag"><span style="color:var(--accent2)">◆</span> all results</span></h2>
+  <h2>
+    <span>ログ（全記録）</span>
+    <span style="display:flex; gap:8px; align-items:center;">
+      <span class="tag"><span style="color:var(--accent2)">◆</span> log</span>
+      <button id="playersFoldBtn" type="button"
+        style="padding:6px 10px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+        開く
+      </button>
+    </span>
+  </h2>
 
-<div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; position:relative;">
-  <!-- フィルタ -->
-<span class="muted" style="font-size:12px;">開始</span>
-<input id="fDateFrom" type="date"
-  style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-  background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+  <!-- ★ここから折りたたみ本体 -->
+  <div id="playersFoldBody" style="display:none;">
 
-<span class="muted" style="font-size:12px;">終了</span>
-<input id="fDateTo" type="date"
-  style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-  background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+    <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; position:relative;">
+      <!-- フィルタ -->
+      <span class="muted" style="font-size:12px;">開始</span>
+      <input id="fDateFrom" type="date"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
 
-  <select id="fTournament"
-    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-    <option value="">大会：すべて</option>
-  </select>
+      <span class="muted" style="font-size:12px;">終了</span>
+      <input id="fDateTo" type="date"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
 
-  <select id="fType"
-    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-    <option value="">種別：すべて</option>
-    <option value="singles">シングル</option>
-    <option value="doubles">ダブル</option>
-  </select>
+      <select id="fTournament"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+        <option value="">大会：すべて</option>
+      </select>
 
-  <select id="fMode"
-    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-    <option value="">モード：すべて</option>
-    <option value="fever">フィーバー</option>
-    <option value="classic">クラシック</option>
-  </select>
+      <select id="fType"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+        <option value="">種別：すべて</option>
+        <option value="singles">シングル</option>
+        <option value="doubles">ダブル</option>
+      </select>
 
-  <!-- 検索（単語1つ、候補表示） -->
-  <div style="flex:1; min-width:240px; position:relative;">
-    <input id="playerQuery" type="text" placeholder="検索（プレイヤー名 / 大会名）"
-      style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-      background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+      <select id="fMode"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+        <option value="">モード：すべて</option>
+        <option value="fever">フィーバー</option>
+        <option value="classic">クラシック</option>
+      </select>
 
-    <!-- ★候補 -->
-    <div id="suggestBox" style="display:none; position:absolute; z-index:10; left:0; right:0; top:calc(100% + 6px);
-      border:1px solid var(--line); background:rgba(18,24,38,0.98); border-radius:12px; overflow:hidden;
-      box-shadow:0 14px 40px rgba(0,0,0,.45);">
-      <div id="suggestList"></div>
-    </div>
-  </div>
+      <!-- 検索（単語1つ、候補表示） -->
+      <div style="flex:1; min-width:240px; position:relative;">
+        <input id="playerQuery" type="text" placeholder="検索（プレイヤー名 / 大会名）"
+          style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+          background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
 
-  <button id="playerClearBtn" type="button"
-    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-    background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
-    リセット
-  </button>
-</div>
-
-<div id="playersHint" class="muted" style="padding:0 12px 8px; font-size:12px;"></div>
-
-          <div class="scrollBox">
-            <table>
-              <thead>
-                <tr>
-                  <th>日付</th>
-                  <th>大会</th>
-                  <th>種別</th>
-                  <th>モード</th>
-                  <th>順位</th>
-                  <th>相方</th>
-                  <th class="right">pt</th>
-                  <th>プレイヤー</th>
-                </tr>
-              </thead>
-              <tbody id="playersAll">
-                <tr><td colspan="8" class="muted">読み込み中…</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div style="padding:4px 8px; font-size:10.5px; opacity:.55; letter-spacing:.2px;" class="muted">
-           ※一覧が長い場合はスクロールできます
-          </div>
-
+        <!-- ★候補 -->
+        <div id="suggestBox" style="display:none; position:absolute; z-index:10; left:0; right:0; top:calc(100% + 6px);
+          border:1px solid var(--line); background:rgba(18,24,38,0.98); border-radius:12px; overflow:hidden;
+          box-shadow:0 14px 40px rgba(0,0,0,.45);">
+          <div id="suggestList"></div>
         </div>
       </div>
+
+      <button id="playerClearBtn" type="button"
+        style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+        background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+        リセット
+      </button>
+    </div>
+
+    <div id="playersHint" class="muted" style="padding:0 12px 8px; font-size:12px;"></div>
+
+    <div class="scrollBox">
+      <table>
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th>大会</th>
+            <th>種別</th>
+            <th>モード</th>
+            <th>順位</th>
+            <th>相方</th>
+            <th class="right">pt</th>
+            <th>プレイヤー</th>
+          </tr>
+        </thead>
+        <tbody id="playersAll">
+          <tr><td colspan="8" class="muted">読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="padding:4px 8px; font-size:10.5px; opacity:.55; letter-spacing:.2px;" class="muted">
+      ※一覧が長い場合はスクロールできます
+    </div>
+
+  </div>
+  <!-- ★ここまで折りたたみ本体 -->
+</div>
+
     </section>
 
 <!-- Tournaments -->
@@ -629,12 +644,12 @@
 
     const $ = (s)=>document.querySelector(s);
 
-    const tabs = [
-      {key:"singles", label:"シングルス"},
-      {key:"doubles", label:"ダブルス"},
-      {key:"players", label:"個人成績"},
-      {key:"tournaments", label:"大会"},
-    ];
+const tabs = [
+  {key:"singles", label:"シングルス"},
+  {key:"doubles", label:"ダブルス"},
+  {key:"players", label:"ログ"},
+  {key:"tournaments", label:"大会"},
+];
 
     function setActiveTab(key){
       tabs.forEach(t=>{
@@ -1212,6 +1227,8 @@ function setupPlayersTab(){
 
       // players tab
       setupPlayersTab();
+      setupPlayersFold();
+
 
 setupRankList("singles");
 setupRankList("doubles");
@@ -1338,6 +1355,18 @@ function setupRankList(type){
 function setupFold(type){
   const btn  = document.getElementById(type==="singles" ? "singlesFoldBtn" : "doublesFoldBtn");
   const body = document.getElementById(type==="singles" ? "singlesFoldBody" : "doublesFoldBody");
+  if(!btn || !body) return;
+
+  btn.addEventListener("click", ()=>{
+    const open = body.style.display !== "none";
+    body.style.display = open ? "none" : "block";
+    btn.textContent = open ? "開く" : "閉じる";
+  });
+}
+
+function setupPlayersFold(){
+  const btn  = document.getElementById("playersFoldBtn");
+  const body = document.getElementById("playersFoldBody");
   if(!btn || !body) return;
 
   btn.addEventListener("click", ()=>{
