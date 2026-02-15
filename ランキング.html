@@ -795,9 +795,10 @@ function getEventSummary(e){
           type: (r[2] || "").trim(),
           mode: (r[3] || "").trim(),
           note: (r[4] || "").trim(),
-          rank: Number((r[5] || "").trim()),
-          p1: (r[6] || "").trim(),
-          p2: (r[7] || "").trim(),
+          format: (r[5] || "").trim(),      // ★追加（F列）
+          rank: Number((r[6] || "").trim()),// ★G列
+          p1: (r[7] || "").trim(),          // ★H列
+          p2: (r[8] || "").trim(),          // ★I列
         }))
         .filter(r =>
           r.date && r.tournament &&
@@ -808,9 +809,9 @@ function getEventSummary(e){
 
       const map = new Map();
       for(const r of data){
-        const key = [r.date, r.tournament, r.type, r.mode, r.note].join("||");
+        const key = [r.date, r.tournament, r.type, r.mode, r.note, r.format].join("||");
         if(!map.has(key)){
-          map.set(key, {date:r.date, tournament:r.tournament, type:r.type, mode:r.mode, note:r.note, results:[]});
+          map.set(key, {date:r.date, tournament:r.tournament, type:r.type, mode:r.mode, note:r.note, format:r.format, results:[]});
         }
         const e = map.get(key);
         if(r.type==="singles"){
@@ -1326,7 +1327,14 @@ function openTournamentModal(e){
   if(!modal || !closeBtn || !title || !sub || !body) return;
 
   title.textContent = `${e.tournament}${e.note ? `（${e.note}）` : ""}`;
-  sub.textContent = `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)}`;
+const fmt =
+  e.format === "rr" ? "総当たり" :
+  e.format === "tn" ? "トナメ" :
+  (e.format || "—");
+
+sub.textContent =
+  `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)} / 形式:${fmt}` +
+  ` / 参加:${sum.participantsText} / 優勝:${sum.winner}${zeroNote}`;
 
   const sum = getEventSummary(e);
   const zeroNote = sum.zeroCount > 0 ? ` / 0pt:${sum.zeroText}` : "";
