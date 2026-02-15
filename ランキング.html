@@ -1000,6 +1000,8 @@ function setupPlayersTab(){
 setupRankList("singles");
 setupRankList("doubles");
 
+    }
+
 // ===== 全ランキング（無限スクロール + 検索ジャンプ） =====
 
 function renderRankingChunk(tbody, rows, start, end){
@@ -1089,8 +1091,6 @@ hint.textContent = `「${input.value}」は見つからない`;
     sc.scrollTo({top:0, behavior:"smooth"});
   };
 }
-
-    }
 
     // 起動：スプシ読んでから描画
     (async () => {
