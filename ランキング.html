@@ -340,12 +340,15 @@
 
 <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; position:relative;">
   <!-- フィルタ -->
-  <input id="fDateFrom" type="date"
-    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-  <input id="fDateTo" type="date"
-    style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-    background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+<span class="muted" style="font-size:12px;">開始</span>
+<input id="fDateFrom" type="date"
+  style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+  background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+
+<span class="muted" style="font-size:12px;">終了</span>
+<input id="fDateTo" type="date"
+  style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+  background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
 
   <select id="fTournament"
     style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
