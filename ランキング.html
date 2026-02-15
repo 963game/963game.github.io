@@ -304,7 +304,7 @@
         <h1>Mario Tennis Fever Community Records</h1>
         <div class="sub">フィーバー/クラシック・オンライン/オフライン混同。記録を育てるレコードページ。</div>
       </div>
-      <div class="pill" id="pillText">配点：<b id="pointsLabel"></b></div>
+      <div class="pill" id="pillText">配点：</div>
     </header>
 
     <div class="tabs" id="tabs"></div>
@@ -1183,7 +1183,6 @@ function setupPlayersTab(){
       });
 
       // pill
-      $("#pointsLabel").textContent = pointsLabel();
       updatePill("singles");
 
       // updated
@@ -1572,15 +1571,15 @@ function renderEntryRow(x){
   const sub = `${x.date} / ${typeJ} / ${modeJ} / 形式:${fmtJ}` + (x.partner ? ` / 相方:${x.partner}` : "");
   const badge = `${x.rank}位 / ${x.pt}pt`;
 
-  return `
-    <div class="row">
-      <div class="row-left">
-        <div class="row-main">${escapeHtml(x.tournament || "")}</div>
-        <div class="row-sub">${escapeHtml(sub)}</div>
-      </div>
-      <div class="badge">${escapeHtml(badge)}</div>
+return `
+  <div class="pRow">
+    <div class="pRow-left">
+      <div class="pRow-main">${escapeHtml(x.tournament || "")}</div>
+      <div class="pRow-sub">${escapeHtml(sub)}</div>
     </div>
-  `;
+    <div class="badge">${escapeHtml(badge)}</div>
+  </div>
+`;
 }
 
 function closePlayerModal(){
@@ -1613,10 +1612,10 @@ function openPlayerModal(name){
 
   const recentList = list.slice(0,5);
   recent.innerHTML = recentList.length ? recentList.map(renderEntryRow).join("") :
-    `<div class="row"><div class="row-left"><div class="row-main">記録なし</div></div></div>`;
+    `<div class="pRow"><div class="pRow-left"><div class="pRow-main">記録なし</div></div></div>`
 
   all.innerHTML = list.length ? list.map(renderEntryRow).join("") :
-    `<div class="row"><div class="row-left"><div class="row-main">記録なし</div></div></div>`;
+    `<div class="pRow"><div class="pRow-left"><div class="pRow-main">記録なし</div></div></div>`
 
   // ペア履歴
   const pairCounts = {};
@@ -1668,8 +1667,7 @@ document.addEventListener("click", (e)=>{
         playerIndex = buildPlayerIndexFromEvents(events); // ★追加
         init();
 
-        init();
-}catch(err){
+        }catch(err){
   console.error(err);
   alert("エラー内容: " + (err?.message || err));
   init();
