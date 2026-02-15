@@ -140,16 +140,19 @@
       overflow-x: hidden;
       scrollbar-gutter: stable;
     }
-    .infoBox{
-      scrollbar-width: thin;
-      scrollbar-color: rgba(159,176,208,0.35) transparent;
-    }
+    .infoBox{ scrollbar-width: thin; scrollbar-color: rgba(159,176,208,0.35) transparent; }
     .infoBox::-webkit-scrollbar{ width: 10px; }
     .infoBox::-webkit-scrollbar-thumb{
       background: rgba(159,176,208,0.25);
       border-radius: 999px;
       border: 3px solid transparent;
       background-clip: content-box;
+    }
+
+    /* 個人成績：長い一覧をスクロールできる枠 */
+    .scrollBox{
+      max-height: 65vh;
+      overflow:auto;
     }
   </style>
 </head>
@@ -179,7 +182,7 @@
         </div>
 
         <div class="card">
-          <h2>シングルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> points / wins / plays</span></h2>
+          <h2>シングルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> top 8</span></h2>
           <div style="overflow:auto">
             <table>
               <thead>
@@ -207,7 +210,7 @@
         </div>
 
         <div class="card">
-          <h2>ダブルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> split points</span></h2>
+          <h2>ダブルス総合（個人） <span class="tag"><span style="color:var(--accent2)">◆</span> top 8</span></h2>
           <div style="overflow:auto">
             <table>
               <thead>
@@ -222,50 +225,54 @@
       </div>
     </section>
 
-    <!-- Players -->
+    <!-- Players (個人成績) -->
     <section id="players" class="row">
+      <div class="stack">
+        <div class="card">
+          <h2>個人成績（全員一覧） <span class="tag"><span style="color:var(--accent2)">◆</span> all results</span></h2>
 
-      <!-- Player Search -->
-      <div class="card" style="margin: 10px 0 12px;">
-        <h2>個人成績 <span class="tag"><span style="color:var(--accent2)">◆</span> history</span></h2>
+          <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <input id="playerQuery" type="text" placeholder="検索：プレイヤー名（例：kurumi / くるみ / KURUMI）"
+              style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+              background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
+            <button id="playerSearchBtn" type="button"
+              style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
+              background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
+              color:var(--text); cursor:pointer;">
+              検索
+            </button>
+            <button id="playerClearBtn" type="button"
+              style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+              background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
+              全員表示に戻す
+            </button>
+          </div>
 
-        <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-          <input id="playerQuery" type="text" placeholder="例：kurumi / くるみ / KURUMI"
-            style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-            background:rgba(18,24,38,0.65); color:var(--text); outline:none;">
-          <button id="playerSearchBtn" type="button"
-            style="padding:10px 12px; border-radius:12px; border:1px solid rgba(184,107,255,0.7);
-            background:linear-gradient(180deg, rgba(184,107,255,0.25), rgba(18,24,38,0.65));
-            color:var(--text); cursor:pointer;">
-            検索
-          </button>
-          <button id="playerClearBtn" type="button"
-            style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
-            background:rgba(18,24,38,0.65); color:var(--muted); cursor:pointer;">
-            クリア
-          </button>
-        </div>
+          <div class="scrollBox">
+            <table>
+              <thead>
+                <tr>
+                  <th>日付</th>
+                  <th>大会</th>
+                  <th>種別</th>
+                  <th>モード</th>
+                  <th>順位</th>
+                  <th>相方</th>
+                  <th class="right">pt</th>
+                  <th>プレイヤー</th>
+                </tr>
+              </thead>
+              <tbody id="playersAll">
+                <tr><td colspan="8" class="muted">読み込み中…</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-        <div style="overflow:auto; max-height:480px;">
-          <table>
-            <thead>
-              <tr>
-                <th>日付</th>
-                <th>大会</th>
-                <th>種別</th>
-                <th>モード</th>
-                <th>順位</th>
-                <th>相方</th>
-                <th class="right">pt</th>
-              </tr>
-            </thead>
-            <tbody id="playerHistory">
-              <tr><td colspan="7" class="muted">ここに全参加者の履歴が表示されます</td></tr>
-            </tbody>
-          </table>
+          <div style="padding:10px 12px" class="muted">
+            ※一覧が長い場合はここだけスクロールできます。検索で絞り込みもOK。
+          </div>
         </div>
       </div>
-
     </section>
 
   </div>
@@ -285,11 +292,11 @@
 
     const $ = (s)=>document.querySelector(s);
 
-const tabs = [
-  {key:"singles", label:"シングルス"},
-  {key:"doubles", label:"ダブルス"},
-  {key:"players", label:"個人成績"},
-];
+    const tabs = [
+      {key:"singles", label:"シングルス"},
+      {key:"doubles", label:"ダブルス"},
+      {key:"players", label:"個人成績"},
+    ];
 
     function setActiveTab(key){
       tabs.forEach(t=>{
@@ -423,6 +430,7 @@ const tabs = [
         .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
     }
 
+    // ★総合テーブルは上位8人だけにする
     function renderOverall(tbodyId, rows){
       const tb = document.getElementById(tbodyId);
       tb.innerHTML = "";
@@ -430,7 +438,8 @@ const tabs = [
         tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません（スプシに追記してね）</td></tr>`;
         return;
       }
-      addTiedRanks(rows).forEach(r=>{
+      const top8 = rows.slice(0,8);
+      addTiedRanks(top8).forEach(r=>{
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="mono">${r.rank}</td>
@@ -571,6 +580,122 @@ const tabs = [
       return out;
     }
 
+    // ===== 個人成績（全員一覧） =====
+    function normalizeName(s){
+      return (s || "").trim().toLowerCase();
+    }
+
+    function pointsForResult(type, rank){
+      if(type === "singles") return singlesPoints[rank] ?? 0;
+      return doublesPerPerson(rank);
+    }
+
+    function getAllPlayerRows(){
+      const out = [];
+      for(const e of events){
+        for(const r of (e.results || [])){
+          if(e.type === "singles"){
+            out.push({
+              date: e.date,
+              tournament: e.tournament,
+              type: "singles",
+              mode: e.mode,
+              rank: r.rank,
+              partner: "",
+              pt: pointsForResult("singles", r.rank),
+              player: r.player || "",
+            });
+          }else{
+            out.push({
+              date: e.date,
+              tournament: e.tournament,
+              type: "doubles",
+              mode: e.mode,
+              rank: r.rank,
+              partner: r.p2 || "",
+              pt: pointsForResult("doubles", r.rank),
+              player: r.p1 || "",
+            });
+            out.push({
+              date: e.date,
+              tournament: e.tournament,
+              type: "doubles",
+              mode: e.mode,
+              rank: r.rank,
+              partner: r.p1 || "",
+              pt: pointsForResult("doubles", r.rank),
+              player: r.p2 || "",
+            });
+          }
+        }
+      }
+
+      // 新しい順（同日なら大会名→順位→名前）
+      out.sort((a,b)=>
+        (a.date < b.date ? 1 : a.date > b.date ? -1 :
+        a.tournament.localeCompare(b.tournament,"ja") ||
+        a.rank - b.rank ||
+        a.player.localeCompare(b.player,"ja"))
+      );
+      return out;
+    }
+
+    function renderPlayersAll(rows){
+      const tb = document.getElementById("playersAll");
+      if(!tb) return;
+
+      tb.innerHTML = "";
+      if(rows.length === 0){
+        tb.innerHTML = `<tr><td colspan="8" class="muted">該当なし</td></tr>`;
+        return;
+      }
+
+      rows.forEach(x=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono">${x.date}</td>
+          <td>${x.tournament}</td>
+          <td>${x.type === "singles" ? "シングル" : "ダブル"}</td>
+          <td>${x.mode === "fever" ? "フィーバー" : "クラシック"}</td>
+          <td class="mono">${x.rank}</td>
+          <td>${x.partner || "—"}</td>
+          <td class="right mono">${x.pt}</td>
+          <td>${x.player || "—"}</td>
+        `;
+        tb.appendChild(tr);
+      });
+    }
+
+    function setupPlayersTab(){
+      const input = document.getElementById("playerQuery");
+      const btn = document.getElementById("playerSearchBtn");
+      const clr = document.getElementById("playerClearBtn");
+      if(!input || !btn || !clr) return;
+
+      const allRows = getAllPlayerRows();
+      renderPlayersAll(allRows);
+
+      const run = ()=>{
+        const q = normalizeName(input.value);
+        if(!q){
+          renderPlayersAll(allRows);
+          return;
+        }
+        const filtered = allRows.filter(r => normalizeName(r.player) === q);
+        renderPlayersAll(filtered);
+      };
+
+      btn.addEventListener("click", (e)=>{ e.preventDefault(); run(); });
+      input.addEventListener("keydown", (e)=>{ if(e.key === "Enter"){ e.preventDefault(); run(); } });
+
+      clr.addEventListener("click", (e)=>{
+        e.preventDefault();
+        input.value = "";
+        renderPlayersAll(allRows);
+        input.focus();
+      });
+    }
+
     // 画面描画
     function init(){
       // tabs
@@ -600,11 +725,11 @@ const tabs = [
       $("#latestDoublesFever").textContent   = podiumText("doubles","fever");
       $("#latestDoublesClassic").textContent = podiumText("doubles","classic");
 
-      // overall
+      // overall（★上位8に制限）
       renderOverall("singlesOverall", computeStats("singles"));
       renderOverall("doublesOverall", computeStats("doubles"));
 
-      // mode boards
+      // mode boards（元から上位8）
       $("#singlesBoards").innerHTML = "";
       $("#doublesBoards").innerHTML = "";
 
@@ -614,7 +739,8 @@ const tabs = [
       renderModeCard("doublesBoards", "フィーバー｜ダブルス（個人累計上位）", computeModeStats("doubles","fever"));
       renderModeCard("doublesBoards", "クラシック｜ダブルス（個人累計上位）", computeModeStats("doubles","classic"));
 
-      setupPlayerSearch();
+      // players tab
+      setupPlayersTab();
     }
 
     // 起動：スプシ読んでから描画
@@ -628,121 +754,6 @@ const tabs = [
         init(); // 空でも画面は出す
       }
     })();
-
-// ===== プレイヤー履歴 =====
-function normalizeName(s){
-  return (s || "").trim().toLowerCase();
-}
-
-function pointsForResult(type, rank){
-  if(type === "singles") return singlesPoints[rank] ?? 0;
-  return doublesPerPerson(rank);
-}
-
-function getPlayerHistory(name){
-  const q = normalizeName(name);
-  if(!q) return [];
-
-  const out = [];
-  for(const e of events){
-    for(const r of (e.results || [])){
-      if(e.type === "singles"){
-        const p = normalizeName(r.player);
-        if(p === q){
-          out.push({
-            date: e.date,
-            tournament: e.tournament,
-            type: "singles",
-            mode: e.mode,
-            rank: r.rank,
-            partner: "",
-            pt: pointsForResult("singles", r.rank),
-          });
-        }
-      }else{
-        const p1 = normalizeName(r.p1);
-        const p2 = normalizeName(r.p2);
-        if(p1 === q || p2 === q){
-          const partner = (p1 === q) ? r.p2 : r.p1;
-          out.push({
-            date: e.date,
-            tournament: e.tournament,
-            type: "doubles",
-            mode: e.mode,
-            rank: r.rank,
-            partner: partner || "",
-            pt: pointsForResult("doubles", r.rank),
-          });
-        }
-      }
-    }
-  }
-
-  // 日付降順 → 同日なら大会名で軽く整列
-  out.sort((a,b)=> (a.date < b.date ? 1 : a.date > b.date ? -1 : a.tournament.localeCompare(b.tournament,"ja")));
-  return out;
-}
-
-function renderPlayerHistory(rows){
-  const tb = document.getElementById("playerHistory");
-  if(!tb) return;
-
-  tb.innerHTML = "";
-  if(rows.length === 0){
-    tb.innerHTML = `<tr><td colspan="7" class="muted">該当なし（表記ゆれがあるなら、スプシの名前を統一してね）</td></tr>`;
-    return;
-  }
-
-  rows.forEach(x=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="mono">${x.date}</td>
-      <td>${x.tournament}</td>
-      <td>${x.type === "singles" ? "シングル" : "ダブル"}</td>
-      <td>${x.mode === "fever" ? "フィーバー" : "クラシック"}</td>
-      <td class="mono">${x.rank}</td>
-      <td>${x.partner || "—"}</td>
-      <td class="right mono">${x.pt}</td>
-    `;
-    tb.appendChild(tr);
-  });
-}
-
-function setupPlayerSearch(){
-  const input = document.getElementById("playerQuery");
-  const btn = document.getElementById("playerSearchBtn");
-  const clr = document.getElementById("playerClearBtn");
-  if(!input || !btn || !clr) return;
-
-  const run = ()=>{
-    const rows = getPlayerHistory(input.value);
-    renderPlayerHistory(rows);
-  };
-
-  // 検索
-  btn.addEventListener("click", (e)=>{
-    e.preventDefault();
-    run();
-  });
-
-  // Enterでも検索
-  input.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter"){
-      e.preventDefault();
-      run();
-    }
-  });
-
-  // クリア（←ここが質問のやつ）
-  clr.addEventListener("click", (e)=>{
-    e.preventDefault();
-    input.value = "";
-    const tb = document.getElementById("playerHistory");
-    if(tb) tb.innerHTML = `<tr><td colspan="7" class="muted">プレイヤー名で検索すると、過去の順位一覧が出ます</td></tr>`;
-    input.focus();
-  });
-}
-
   </script>
 </body>
 </html>
