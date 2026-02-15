@@ -196,6 +196,16 @@
   max-height: 300px; /* ここだけ調整 */
 }
 
+/* スマホ：配点ピルを折り返して切れないようにする */
+@media (max-width: 520px){
+  .pill{
+    white-space: normal;     /* 1行固定を解除 */
+    overflow: visible;       /* 切り捨てない */
+    text-overflow: clip;     /* …を消す */
+    line-height: 1.25;
+  }
+}
+
   </style>
 </head>
 
