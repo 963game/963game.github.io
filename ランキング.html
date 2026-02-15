@@ -191,6 +191,11 @@
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
 }
 
+/* ランキング（全順位）だけ高さを小さくする */
+.rankBox{
+  max-height: 300px; /* ここだけ調整 */
+}
+
   </style>
 </head>
 
@@ -253,7 +258,7 @@
     </button>
   </div>
 
-  <div class="scrollBox" id="singlesRankScroll">
+<div class="scrollBox rankBox" id="singlesRankScroll">
     <table>
       <thead>
         <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
@@ -316,7 +321,7 @@
     </button>
   </div>
 
-  <div class="scrollBox" id="doublesRankScroll">
+<div class="scrollBox rankBox" id="doublesRankScroll">
     <table>
       <thead>
         <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
@@ -1037,7 +1042,7 @@ function setupRankList(type){
 
   tb.innerHTML = "";
   let visible = 0;
-  const step = 8;
+  const step = 4;
 
   const ensureVisible = (count)=>{
     const next = Math.min(count, rows.length);
