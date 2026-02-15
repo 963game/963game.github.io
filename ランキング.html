@@ -1326,19 +1326,22 @@ function openTournamentModal(e){
 
   if(!modal || !closeBtn || !title || !sub || !body) return;
 
-  title.textContent = `${e.tournament}${e.note ? `（${e.note}）` : ""}`;
+title.textContent = `${e.tournament}${e.note ? `（${e.note}）` : ""}`;
+
+// ① 先に summary を作る（参加/優勝/0pt数）
+const sum = getEventSummary(e);
+const zeroNote = sum.zeroCount > 0 ? ` / 0pt:${sum.zeroText}` : "";
+
+// ② format 表示
 const fmt =
   e.format === "rr" ? "総当たり" :
   e.format === "tn" ? "トナメ" :
   (e.format || "—");
 
+// ③ sub は1回だけ設定（ここがポイント）
 sub.textContent =
   `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)} / 形式:${fmt}` +
   ` / 参加:${sum.participantsText} / 優勝:${sum.winner}${zeroNote}`;
-
-  const sum = getEventSummary(e);
-  const zeroNote = sum.zeroCount > 0 ? ` / 0pt:${sum.zeroText}` : "";
-  sub.textContent = `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)} / 参加:${sum.participantsText} / 優勝:${sum.winner}${zeroNote}`;
 
   body.innerHTML = "";
 
