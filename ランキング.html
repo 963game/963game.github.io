@@ -725,10 +725,10 @@
       return out;
     }
 
-    // ===== 個人成績（全員一覧） =====
-    function normalizeName(s){
-      return (s || "").trim().toLowerCase();
-    }
+// ===== 個人成績（全員一覧） =====
+function normalizeText(s){
+  return (s || "").trim().toLowerCase();
+}
 
     function pointsForResult(type, rank){
       if(type === "singles") return singlesPoints[rank] ?? 0;
@@ -811,35 +811,142 @@
       });
     }
 
-    function setupPlayersTab(){
-      const input = document.getElementById("playerQuery");
-      const btn = document.getElementById("playerSearchBtn");
-      const clr = document.getElementById("playerClearBtn");
-      if(!input || !btn || !clr) return;
+function setupPlayersTab(){
+  const input = document.getElementById("playerQuery");
+  const clr = document.getElementById("playerClearBtn");
 
-      const allRows = getAllPlayerRows();
-      renderPlayersAll(allRows);
+  const fFrom = document.getElementById("fDateFrom");
+  const fTo = document.getElementById("fDateTo");
+  const fTour = document.getElementById("fTournament");
+  const fType = document.getElementById("fType");
+  const fMode = document.getElementById("fMode");
 
-      const run = ()=>{
-        const q = normalizeName(input.value);
-        if(!q){
-          renderPlayersAll(allRows);
-          return;
-        }
-        const filtered = allRows.filter(r => normalizeName(r.player) === q);
-        renderPlayersAll(filtered);
-      };
+  const hint = document.getElementById("playersHint");
 
-      btn.addEventListener("click", (e)=>{ e.preventDefault(); run(); });
-      input.addEventListener("keydown", (e)=>{ if(e.key === "Enter"){ e.preventDefault(); run(); } });
+  const suggestBox = document.getElementById("suggestBox");
+  const suggestList = document.getElementById("suggestList");
 
-      clr.addEventListener("click", (e)=>{
-        e.preventDefault();
-        input.value = "";
-        renderPlayersAll(allRows);
-        input.focus();
-      });
+  if(!input || !clr || !fFrom || !fTo || !fTour || !fType || !fMode || !hint || !suggestBox || !suggestList) return;
+
+  const allRows = getAllPlayerRows();
+
+  // 大会候補をselectへ
+  const tourSet = new Set(allRows.map(r=>r.tournament).filter(Boolean));
+  const tours = Array.from(tourSet).sort((a,b)=>a.localeCompare(b,"ja"));
+  tours.forEach(t=>{
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t;
+    fTour.appendChild(opt);
+  });
+
+  // サジェスト候補（プレイヤー＋大会）
+  const names = Array.from(new Set(allRows.map(r=>r.player).filter(Boolean)));
+  const suggestPool = Array.from(new Set([...names, ...tours]))
+    .sort((a,b)=>a.localeCompare(b,"ja"));
+
+  const inRange = (d, from, to)=>{
+    if(from && d < from) return false;
+    if(to && d > to) return false;
+    return true;
+  };
+
+  const apply = ()=>{
+    const q = normalizeText(input.value);
+    const from = fFrom.value || "";
+    const to = fTo.value || "";
+    const tour = fTour.value || "";
+    const type = fType.value || "";
+    const mode = fMode.value || "";
+
+    const filtered = allRows.filter(r=>{
+      if(!inRange(r.date, from, to)) return false;
+      if(tour && r.tournament !== tour) return false;
+      if(type && r.type !== type) return false;
+      if(mode && r.mode !== mode) return false;
+
+      if(q){
+        const p = normalizeText(r.player);
+        const t = normalizeText(r.tournament);
+        if(!p.includes(q) && !t.includes(q)) return false;
+      }
+      return true;
+    });
+
+    renderPlayersAll(filtered);
+
+    if(filtered.length === 0){
+      hint.textContent = "0件です。条件を減らすかリセットしてね。";
+    }else{
+      hint.textContent = `${filtered.length}件`;
     }
+  };
+
+  const hideSuggest = ()=>{ suggestBox.style.display = "none"; };
+
+  const buildSuggest = ()=>{
+    const q = normalizeText(input.value);
+    if(!q){
+      hideSuggest();
+      return;
+    }
+
+    const list = suggestPool.filter(s => normalizeText(s).includes(q)).slice(0,10);
+    if(list.length === 0){
+      hideSuggest();
+      return;
+    }
+
+    suggestList.innerHTML = "";
+    list.forEach(txt=>{
+      const item = document.createElement("div");
+      item.textContent = txt;
+      item.style.padding = "10px 12px";
+      item.style.cursor = "pointer";
+      item.onmouseenter = ()=> item.style.background = "rgba(110,231,255,0.08)";
+      item.onmouseleave = ()=> item.style.background = "transparent";
+      item.onclick = ()=>{
+        input.value = txt;
+        hideSuggest();
+        apply();
+      };
+      suggestList.appendChild(item);
+    });
+
+    suggestBox.style.display = "block";
+  };
+
+  renderPlayersAll(allRows);
+  hint.textContent = `${allRows.length}件`;
+
+  input.addEventListener("input", ()=>{
+    buildSuggest();
+    apply();
+  });
+
+  [fFrom, fTo, fTour, fType, fMode].forEach(el=>{
+    el.addEventListener("change", ()=>apply());
+  });
+
+  document.addEventListener("click", (e)=>{
+    if(!suggestBox.contains(e.target) && !input.contains(e.target)){
+      hideSuggest();
+    }
+  });
+
+  clr.addEventListener("click", (e)=>{
+    e.preventDefault();
+    fFrom.value = "";
+    fTo.value = "";
+    fTour.value = "";
+    fType.value = "";
+    fMode.value = "";
+    input.value = "";
+    hideSuggest();
+    renderPlayersAll(allRows);
+    hint.textContent = `${allRows.length}件`;
+  });
+}
 
     // 画面描画
     function init(){
