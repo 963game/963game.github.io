@@ -1669,11 +1669,11 @@ document.addEventListener("click", (e)=>{
         init();
 
         init();
-      }catch(err){
-        console.error(err);
-        alert("スプシ読み込みに失敗：CSV公開URL/公開設定を確認してね");
-        init(); // 空でも画面は出す
-      }
+}catch(err){
+  console.error(err);
+  alert("エラー内容: " + (err?.message || err));
+  init();
+}
     })();
 
   </script>
