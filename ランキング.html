@@ -474,6 +474,56 @@
       </div>
     </section>
 
+<!-- Tournaments -->
+<section id="tournaments" class="row">
+  <div class="stack">
+
+    <div class="card">
+      <h2>大会一覧 <span class="tag"><span style="color:var(--accent2)">◆</span> events</span></h2>
+
+      <div style="padding:10px 12px; display:flex; gap:8px; flex-wrap:wrap;">
+
+        <input id="tourSearch" type="text" placeholder="大会名検索"
+          style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px;
+          border:1px solid var(--line); background:rgba(18,24,38,0.65); color:var(--text);">
+
+        <select id="tourType"
+          style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+          background:rgba(18,24,38,0.65); color:var(--text);">
+          <option value="">種別：すべて</option>
+          <option value="singles">シングル</option>
+          <option value="doubles">ダブル</option>
+        </select>
+
+        <select id="tourMode"
+          style="padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+          background:rgba(18,24,38,0.65); color:var(--text);">
+          <option value="">モード：すべて</option>
+          <option value="fever">フィーバー</option>
+          <option value="classic">クラシック</option>
+        </select>
+
+      </div>
+
+      <div class="scrollBox" style="max-height:60vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>大会</th>
+              <th>種別</th>
+              <th>モード</th>
+            </tr>
+          </thead>
+          <tbody id="tourList"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
   </div>
 
   <script>
@@ -495,6 +545,7 @@
       {key:"singles", label:"シングルス"},
       {key:"doubles", label:"ダブルス"},
       {key:"players", label:"個人成績"},
+      {key:"tournaments", label:"大会"},
     ];
 
     function setActiveTab(key){
@@ -1050,6 +1101,9 @@ setupRankList("doubles");
 setupFold("singles");
 setupFold("doubles");
 
+setupTournamentsTab();
+renderTournaments();
+
     }
 
 // ===== 全ランキング（無限スクロール + 検索ジャンプ） =====
@@ -1175,6 +1229,129 @@ function setupFold(type){
   });
 }
 
+// ===== 大会タブ（一覧 + クリックで詳細モーダル） =====
+
+function eventKey(e){
+  return [e.date, e.tournament, e.type, e.mode, e.note].join("||");
+}
+
+function formatType(type){
+  return type==="singles" ? "シングル" : "ダブル";
+}
+function formatMode(mode){
+  return mode==="fever" ? "フィーバー" : "クラシック";
+}
+
+function getFilteredEvents(){
+  const q = normalizeText(document.getElementById("tourSearch")?.value || "");
+  const t = (document.getElementById("tourType")?.value || "");
+  const m = (document.getElementById("tourMode")?.value || "");
+
+  return (events || []).filter(e=>{
+    if(t && e.type !== t) return false;
+    if(m && e.mode !== m) return false;
+    if(q){
+      const name = normalizeText(e.tournament);
+      const note = normalizeText(e.note);
+      if(!name.includes(q) && !note.includes(q)) return false;
+    }
+    return true;
+  }).sort((a,b)=> (a.date < b.date ? 1 : -1));
+}
+
+function renderTournaments(){
+  const tb = document.getElementById("tourList");
+  if(!tb) return;
+
+  const list = getFilteredEvents();
+  tb.innerHTML = "";
+
+  if(list.length === 0){
+    tb.innerHTML = `<tr><td colspan="4" class="muted">該当なし</td></tr>`;
+    return;
+  }
+
+  list.forEach(e=>{
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.dataset.key = eventKey(e);
+    tr.innerHTML = `
+      <td class="mono">${e.date}</td>
+      <td>${e.tournament}${e.note ? `<span class="muted">（${e.note}）</span>` : ""}</td>
+      <td>${formatType(e.type)}</td>
+      <td>${formatMode(e.mode)}</td>
+    `;
+    tr.onclick = ()=> openTournamentModal(e);
+    tb.appendChild(tr);
+  });
+}
+
+function openTournamentModal(e){
+  const modal = document.getElementById("tourModal");
+  const closeBtn = document.getElementById("tourModalClose");
+  const title = document.getElementById("tourModalTitle");
+  const sub = document.getElementById("tourModalSub");
+  const body = document.getElementById("tourModalBody");
+
+  if(!modal || !closeBtn || !title || !sub || !body) return;
+
+  title.textContent = `${e.tournament}${e.note ? `（${e.note}）` : ""}`;
+  sub.textContent = `${e.date} / ${formatType(e.type)} / ${formatMode(e.mode)}`;
+
+  body.innerHTML = "";
+  const results = (e.results || []).slice().sort((a,b)=>a.rank-b.rank);
+
+  if(results.length === 0){
+    body.innerHTML = `<tr><td colspan="4" class="muted">結果なし</td></tr>`;
+  }else{
+    results.forEach(r=>{
+      const tr = document.createElement("tr");
+
+      if(e.type === "singles"){
+        const pt = singlesPoints[r.rank] ?? 0;
+        tr.innerHTML = `
+          <td class="mono">${r.rank}</td>
+          <td>${r.player || "—"}</td>
+          <td class="right mono">${pt}</td>
+          <td class="muted">—</td>
+        `;
+      }else{
+        const pt = doublesPerPerson(r.rank);
+        // 1行にペア表示（個人ではなく “結果” として）
+        tr.innerHTML = `
+          <td class="mono">${r.rank}</td>
+          <td>${(r.p1||"—")}</td>
+          <td class="right mono">${pt}</td>
+          <td>${(r.p2||"—")}</td>
+        `;
+      }
+
+      body.appendChild(tr);
+    });
+  }
+
+  const close = ()=>{
+    modal.style.display = "none";
+    document.removeEventListener("keydown", onKey);
+  };
+  const onKey = (ev)=>{ if(ev.key === "Escape") close(); };
+
+  closeBtn.onclick = close;
+  modal.onclick = (ev)=>{ if(ev.target === modal) close(); };
+  document.addEventListener("keydown", onKey);
+
+  modal.style.display = "block";
+}
+
+function setupTournamentsTab(){
+  const s = document.getElementById("tourSearch");
+  const t = document.getElementById("tourType");
+  const m = document.getElementById("tourMode");
+  if(s) s.addEventListener("input", ()=> renderTournaments());
+  if(t) t.addEventListener("change", ()=> renderTournaments());
+  if(m) m.addEventListener("change", ()=> renderTournaments());
+}
+
     // 起動：スプシ読んでから描画
     (async () => {
       try{
@@ -1187,5 +1364,58 @@ function setupFold(type){
       }
     })();
   </script>
+
+<!-- ★大会 詳細モーダル -->
+<div id="tourModal" style="
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,.62);
+  padding:18px 12px;
+">
+  <div style="
+    max-width:980px; margin:0 auto;
+    border:1px solid var(--line);
+    background:rgba(18,24,38,0.96);
+    border-radius:18px;
+    box-shadow:0 20px 60px rgba(0,0,0,.55);
+    overflow:hidden;
+  ">
+    <div style="
+      padding:12px 12px 10px;
+      border-bottom:1px solid rgba(35,48,74,0.75);
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    ">
+      <div style="min-width:0;">
+        <div id="tourModalTitle" style="font-size:13px; letter-spacing:.25px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+        <div id="tourModalSub" class="muted" style="font-size:12px; margin-top:4px;"></div>
+      </div>
+      <button id="tourModalClose" type="button" style="
+        padding:8px 10px; border-radius:12px;
+        border:1px solid var(--line);
+        background:rgba(18,24,38,0.65);
+        color:var(--muted); cursor:pointer;
+      ">閉じる</button>
+    </div>
+
+    <div style="padding:10px 12px;">
+      <div class="scrollBox" style="max-height:70vh; border-top:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>順位</th>
+              <th>プレイヤー</th>
+              <th class="right">pt</th>
+              <th>相方</th>
+            </tr>
+          </thead>
+          <tbody id="tourModalBody"></tbody>
+        </table>
+      </div>
+      <div class="muted" style="font-size:11px; padding:6px 2px 0; opacity:.7;">
+        ※ダブルスは個人表示（相方付き）
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
