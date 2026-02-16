@@ -643,10 +643,20 @@
       return "badge";
     }
 
-    // 表用：同率でも連番
-    function addTiedRanks(rows){
-      return rows.map((r,i)=> ({...r, rank:i+1}));
+function addTiedRanks(rows){
+  let rank = 0;
+  let shown = 0;
+  let prev = null;
+
+  return rows.map(r=>{
+    shown += 1;
+    if(prev === null || r.plays !== prev){
+      rank = shown;
+      prev = r.plays;
     }
+    return {...r, rank};
+  });
+}
 
     // 最新大会（type+mode）
     function latestEvent(type, mode){
@@ -760,7 +770,7 @@
 
     function stars(n, cls){
       if(!n) return `<span class="muted">—</span>`;
-      return `<span class="${cls}">${"☆".repeat(n)}</span>`;
+      return `<span class="${cls}">☆${n}</span>`;
     }
 
     function renderOverall(tbodyId, rows){
@@ -785,57 +795,57 @@
       });
     }
 
-    function renderModeCard(targetId, title, rows){
-      const wrap = document.createElement("div");
-      wrap.className = "card";
+  function renderModeCard(targetId, title, rows){
+  const wrap = document.createElement("div");
+  wrap.className = "card";
 
-      const h2 = document.createElement("h2");
-      const left = document.createElement("span");
-      left.textContent = title;
-      const right = document.createElement("span");
-      right.className = "tag";
-      right.innerHTML = `<span style="color:var(--accent2)">◆</span> best`;
-      h2.appendChild(left);
-      h2.appendChild(right);
+  const h2 = document.createElement("h2");
+  const left = document.createElement("span");
+  left.textContent = title;
+  const right = document.createElement("span");
+  right.className = "tag";
+  right.innerHTML = `<span style="color:var(--accent2)">◆</span> best`;
+  h2.appendChild(left);
+  h2.appendChild(right);
 
-      const content = document.createElement("div");
-      content.style.overflow = "auto";
+  const content = document.createElement("div");
+  content.style.overflow = "auto";
 
-      const table = document.createElement("table");
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th class="rank">順位</th>
-            <th>プレイヤー</th>
-            <th class="right">pt</th>
-            <th class="right">優勝</th>
-            <th class="right">出場</th>
-          </tr>
-        </thead>
-        <tbody></tbody>`;
-      const tb = table.querySelector("tbody");
+  const table = document.createElement("table");
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>プレイヤー</th>
+        <th class="right">参加</th>
+        <th class="right">☆（1位）</th>
+        <th class="right">☆（2位）</th>
+      </tr>
+    </thead>
+    <tbody></tbody>`;
+  const tb = table.querySelector("tbody");
 
-      const top = rows.slice(0,8);
-      if(top.length===0){
-        tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
-      }else{
-        addTiedRanks(top).forEach(r=>{
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="rank"><span class="${badgeClass(r.rank)}"><span class="mono">#${r.rank}</span></span></td>
-            <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
-            <td class="right mono">${r.pt}</td>
-            <td class="right mono">${r.wins}</td>
-            <td class="right mono">${r.plays}</td>`;
-          tb.appendChild(tr);
-        });
-      }
+  const top = rows.slice(0,8);
+  if(top.length===0){
+    tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
+  }else{
+    addTiedRanks(top).forEach(r=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="mono">${r.rank}</td>
+        <td>${escapeHtml(r.name)}</td>
+        <td class="right mono">${r.plays}</td>
+        <td class="right mono">${stars(r.wins, "star-gold")}</td>
+        <td class="right mono">—</td>`;
+      tb.appendChild(tr);
+    });
+  }
 
-      content.appendChild(table);
-      wrap.appendChild(h2);
-      wrap.appendChild(content);
-      document.getElementById(targetId).appendChild(wrap);
-    }
+  content.appendChild(table);
+  wrap.appendChild(h2);
+  wrap.appendChild(content);
+  document.getElementById(targetId).appendChild(wrap);
+}
 
     // CSV読み込み → events化
     async function loadEventsFromSheet(){
