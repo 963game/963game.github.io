@@ -21,6 +21,13 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <style>
+
+/* 表用：☆の色 */
+.star-gold{ color: var(--gold); }
+.star-silver{ color: var(--silver); }
+
+const PUBLIC_MODE = true; // 表用
+
     :root{
       --bg:#0b0e14; --line:#23304a;
       --text:#e9eefc; --muted:#9fb0d0;
@@ -339,7 +346,15 @@
           <div style="overflow:auto">
             <table>
               <thead>
-                <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+                <tr>
+
+  <th>順位</th>
+  <th>プレイヤー</th>
+  <th class="right">参加</th>
+  <th class="right">☆（1位）</th>
+  <th class="right">☆（2位）</th>
+</tr>
+
               </thead>
               <tbody id="singlesOverall"></tbody>
             </table>
@@ -390,7 +405,15 @@
     <div class="scrollBox rankScroll" id="singlesRankScroll">
       <table>
         <thead>
-          <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+          <tr>
+
+  <th>順位</th>
+  <th>プレイヤー</th>
+  <th class="right">参加</th>
+  <th class="right">☆（1位）</th>
+  <th class="right">☆（2位）</th>
+</tr>
+
         </thead>
         <tbody id="singlesRankAll"></tbody>
       </table>
@@ -420,7 +443,15 @@
           <div style="overflow:auto">
             <table>
               <thead>
-                <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+                <tr>
+
+  <th>順位</th>
+  <th>プレイヤー</th>
+  <th class="right">参加</th>
+  <th class="right">☆（1位）</th>
+  <th class="right">☆（2位）</th>
+</tr>
+
               </thead>
               <tbody id="doublesOverall"></tbody>
             </table>
@@ -471,7 +502,15 @@
     <div class="scrollBox rankScroll" id="doublesRankScroll">
       <table>
         <thead>
-          <tr><th>順位</th><th>プレイヤー</th><th class="right">合計pt</th><th class="right">優勝</th><th class="right">出場</th></tr>
+          <tr>
+
+  <th>順位</th>
+  <th>プレイヤー</th>
+  <th class="right">参加</th>
+  <th class="right">☆（1位）</th>
+  <th class="right">☆（2位）</th>
+</tr>
+
         </thead>
         <tbody id="doublesRankAll"></tbody>
       </table>
@@ -765,33 +804,46 @@ function getEventSummary(e){
 }
 
     // 総合
-    function computeStats(type){
-      const map = new Map();
-      const add = (name, pt, isWin)=>{
-        if(!name) return;
-        const v = map.get(name) ?? {pt:0,wins:0,plays:0};
-        v.pt += pt;
-        v.plays += 1;
-        if(isWin) v.wins += 1;
-        map.set(name, v);
-      };
 
-      events.filter(e=>e.type===type).forEach(e=>{
-        if(type==="singles"){
-          e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
-        }else{
-          e.results.forEach(r=>{
-            const ptEach = doublesPerPerson(r.rank);
-            add(r.p1, ptEach, r.rank===1);
-            add(r.p2, ptEach, r.rank===1);
-          });
-        }
+function computeStats(type){
+  const map = new Map();
+
+  const add = (name, rank)=>{
+    if(!name) return;
+    const v = map.get(name) ?? {plays:0, gold:0, silver:0};
+
+    // 参加=1（rank=0でも参加扱いにしたい運用ならこのままでOK）
+    v.plays += 1;
+
+    // ☆カウント（1位=金、2位=銀）
+    if(rank===1) v.gold += 1;
+    if(rank===2) v.silver += 1;
+
+    map.set(name, v);
+  };
+
+  events.filter(e=>e.type===type).forEach(e=>{
+    if(type==="singles"){
+      e.results.forEach(r=> add(r.player, Number(r.rank||0)));
+    }else{
+      e.results.forEach(r=>{
+        const rk = Number(r.rank||0);
+        add(r.p1, rk);
+        add(r.p2, rk);
       });
-
-      return Array.from(map.entries())
-        .map(([name,v])=>({name, ...v}))
-        .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
     }
+  });
+
+  // 並び順：参加が多い順 → 金☆ → 銀☆ → 名前
+  return Array.from(map.entries())
+    .map(([name,v])=>({name, ...v}))
+    .sort((a,b)=>
+      b.plays-a.plays ||
+      b.gold-a.gold ||
+      b.silver-a.silver ||
+      a.name.localeCompare(b.name,"ja")
+    );
+}
 
     // モード別
     function computeModeStats(type, mode){
@@ -823,25 +875,33 @@ function getEventSummary(e){
     }
 
     // ★総合テーブルは上位8人だけにする
-    function renderOverall(tbodyId, rows){
-      const tb = document.getElementById(tbodyId);
-      tb.innerHTML = "";
-      if(rows.length===0){
-        tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません</td></tr>`;
-        return;
-      }
-      const top8 = rows.slice(0,8);
-      addTiedRanks(top8).forEach(r=>{
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td class="mono">${r.rank}</td>
-          <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
-          <td class="right mono">${r.pt}</td>
-          <td class="right mono">${r.wins}</td>
-          <td class="right mono">${r.plays}</td>`;
-        tb.appendChild(tr);
-      });
-    }
+
+function stars(n, cls){
+  if(!n) return `<span class="muted">—</span>`;
+  return `<span class="${cls}">${"☆".repeat(n)}</span>`;
+}
+
+function renderOverall(tbodyId, rows){
+  const tb = document.getElementById(tbodyId);
+  tb.innerHTML = "";
+  if(rows.length===0){
+    tb.innerHTML = `<tr><td colspan="5" class="muted">まだデータがありません</td></tr>`;
+    return;
+  }
+
+  const top8 = rows.slice(0,8);
+  addTiedRanks(top8).forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="mono">${r.rank}</td>
+      <td><span class="player-link" data-player="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></td>
+      <td class="right mono">${r.plays}</td>
+      <td class="right mono">${stars(r.gold, "star-gold")}</td>
+      <td class="right mono">${stars(r.silver, "star-silver")}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
 
     function renderModeCard(targetId, title, rows){
       const wrap = document.createElement("div");
@@ -978,10 +1038,10 @@ function normalizeText(s){
   return (s || "").trim().toLowerCase();
 }
 
-    function pointsForResult(type, rank){
-      if(type === "singles") return singlesPoints[rank] ?? 0;
-      return doublesPerPerson(rank);
-    }
+function pointsForResult(type, rank){
+  // 表用：順位に関係なく「参加=1」
+  return 1;
+}
 
     function getAllPlayerRows(){
       const out = [];
