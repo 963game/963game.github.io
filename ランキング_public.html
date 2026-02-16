@@ -650,10 +650,14 @@ function addTiedRanks(rows){
 
   return rows.map(r=>{
     shown += 1;
-    if(prev === null || r.plays !== prev){
+
+    const key = r.avgRank.toFixed(4);  // ★平均順位で同率判定
+
+    if(prev === null || key !== prev){
       rank = shown;
-      prev = r.plays;
+      prev = key;
     }
+
     return {...r, rank};
   });
 }
@@ -703,41 +707,55 @@ function addTiedRanks(rows){
     }
 
     // ===== 総合（参加 / ☆ / ☆）=====
-    function computeStats(type){
-      const map = new Map();
 
-      const add = (name, rank)=>{
-        if(!name) return;
-        const v = map.get(name) ?? {plays:0, gold:0, silver:0};
+function computeStats(type){
+  const map = new Map();
 
-        v.plays += 1;
-        if(rank===1) v.gold += 1;
-        if(rank===2) v.silver += 1;
+  const add = (name, rank)=>{
+    if(!name) return;
+    const v = map.get(name) ?? {
+      plays:0,
+      gold:0,
+      silver:0,
+      rankSum:0   // ★順位合計
+    };
 
-        map.set(name, v);
-      };
+    v.plays += 1;
+    v.rankSum += rank;
 
-      events.filter(e=>e.type===type).forEach(e=>{
-        if(type==="singles"){
-          e.results.forEach(r=> add(r.player, Number(r.rank||0)));
-        }else{
-          e.results.forEach(r=>{
-            const rk = Number(r.rank||0);
-            add(r.p1, rk);
-            add(r.p2, rk);
-          });
-        }
+    if(rank===1) v.gold += 1;
+    if(rank===2) v.silver += 1;
+
+    map.set(name, v);
+  };
+
+  events.filter(e=>e.type===type).forEach(e=>{
+    if(type==="singles"){
+      e.results.forEach(r=> add(r.player, Number(r.rank||0)));
+    }else{
+      e.results.forEach(r=>{
+        const rk = Number(r.rank||0);
+        add(r.p1, rk);
+        add(r.p2, rk);
       });
-
-      return Array.from(map.entries())
-        .map(([name,v])=>({name, ...v}))
-        .sort((a,b)=>
-          b.plays-a.plays ||
-          b.gold-a.gold ||
-          b.silver-a.silver ||
-          a.name.localeCompare(b.name,"ja")
-        );
     }
+  });
+
+  return Array.from(map.entries())
+    .map(([name,v])=>({
+      name,
+      plays:v.plays,
+      gold:v.gold,
+      silver:v.silver,
+      avgRank: v.rankSum / v.plays   // ★平均順位
+    }))
+    .sort((a,b)=>
+      a.avgRank - b.avgRank ||   // ★小さいほど上
+      b.gold - a.gold ||
+      b.silver - a.silver ||
+      a.name.localeCompare(b.name,"ja")
+    );
+}
 
     // ===== モード別（既存のまま：pt / wins / plays）=====
     function computeModeStats(type, mode){
