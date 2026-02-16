@@ -325,7 +325,7 @@
 
               <label style="display:inline-flex; gap:6px; align-items:center; font-size:12px; color:var(--muted);">
                 <input id="singlesHideZero" type="checkbox" checked>
-                0ptを隠す
+                参加0を隠す
               </label>
 
               <button id="singlesSearchBtn" type="button"
@@ -419,7 +419,7 @@
 
               <label style="display:inline-flex; gap:6px; align-items:center; font-size:12px; color:var(--muted);">
                 <input id="doublesHideZero" type="checkbox" checked>
-                0ptを隠す
+                参加0を隠す
               </label>
 
               <button id="doublesSearchBtn" type="button"
@@ -541,7 +541,7 @@
                     <th>モード</th>
                     <th>順位</th>
                     <th>相方</th>
-                    <th class="right">pt</th>
+                    <th class="right">参加</th>
                     <th>プレイヤー</th>
                   </tr>
                 </thead>
@@ -608,12 +608,7 @@
   </div>
 
   <script>
-    const PUBLIC_MODE = true; // 表用
-
-    // ===== 配点（固定）=====
-    const singlesPoints = {1:20,2:16,3:12,4:10,5:8,6:6,7:4,8:2};
-    const doublesTeamPoints = {...singlesPoints};
-    const doublesPerPerson = (rank)=> (doublesTeamPoints[rank] ?? 0) / 2;
+    const PUBLIC_MODE = true;
 
     // ★スプシCSV URL
     const SPREADSHEET_CSV_URL =
@@ -636,31 +631,27 @@
       });
     }
 
-    function badgeClass(rank){
-      if(rank===1) return "badge r1";
-      if(rank===2) return "badge r2";
-      if(rank===3) return "badge r3";
-      return "badge";
+    // ★同率順位（avgRankが無い行でも落ちない）
+    function addTiedRanks(rows){
+      let rank = 0;
+      let shown = 0;
+      let prev = null;
+
+      return rows.map(r=>{
+        shown += 1;
+
+        // avgRankがある→平均順位で同率
+        // 無い→同率なし（落ちないように）
+        const key = Number.isFinite(r.avgRank) ? r.avgRank.toFixed(4) : String(shown);
+
+        if(prev === null || key !== prev){
+          rank = shown;
+          prev = key;
+        }
+
+        return {...r, rank};
+      });
     }
-
-function addTiedRanks(rows){
-  let rank = 0;
-  let shown = 0;
-  let prev = null;
-
-  return rows.map(r=>{
-    shown += 1;
-
-    const key = r.avgRank.toFixed(4);  // ★平均順位で同率判定
-
-    if(prev === null || key !== prev){
-      rank = shown;
-      prev = key;
-    }
-
-    return {...r, rank};
-  });
-}
 
     // 最新大会（type+mode）
     function latestEvent(type, mode){
@@ -707,63 +698,61 @@ function addTiedRanks(rows){
     }
 
     // ===== 総合（参加 / ☆ / ☆）=====
+    function computeStats(type){
+      const map = new Map();
 
-function computeStats(type){
-  const map = new Map();
+      const add = (name, rank)=>{
+        if(!name) return;
+        const v = map.get(name) ?? {
+          plays:0,
+          gold:0,
+          silver:0,
+          rankSum:0
+        };
 
-  const add = (name, rank)=>{
-    if(!name) return;
-    const v = map.get(name) ?? {
-      plays:0,
-      gold:0,
-      silver:0,
-      rankSum:0   // ★順位合計
-    };
+        v.plays += 1;
+        v.rankSum += rank;
 
-    v.plays += 1;
-    v.rankSum += rank;
+        if(rank===1) v.gold += 1;
+        if(rank===2) v.silver += 1;
 
-    if(rank===1) v.gold += 1;
-    if(rank===2) v.silver += 1;
+        map.set(name, v);
+      };
 
-    map.set(name, v);
-  };
-
-  events.filter(e=>e.type===type).forEach(e=>{
-    if(type==="singles"){
-      e.results.forEach(r=> add(r.player, Number(r.rank||0)));
-    }else{
-      e.results.forEach(r=>{
-        const rk = Number(r.rank||0);
-        add(r.p1, rk);
-        add(r.p2, rk);
+      events.filter(e=>e.type===type).forEach(e=>{
+        if(type==="singles"){
+          e.results.forEach(r=> add(r.player, Number(r.rank||0)));
+        }else{
+          e.results.forEach(r=>{
+            const rk = Number(r.rank||0);
+            add(r.p1, rk);
+            add(r.p2, rk);
+          });
+        }
       });
+
+      return Array.from(map.entries())
+        .map(([name,v])=>({
+          name,
+          plays:v.plays,
+          gold:v.gold,
+          silver:v.silver,
+          avgRank: v.rankSum / v.plays
+        }))
+        .sort((a,b)=>
+          a.avgRank - b.avgRank ||
+          b.gold - a.gold ||
+          b.silver - a.silver ||
+          a.name.localeCompare(b.name,"ja")
+        );
     }
-  });
 
-  return Array.from(map.entries())
-    .map(([name,v])=>({
-      name,
-      plays:v.plays,
-      gold:v.gold,
-      silver:v.silver,
-      avgRank: v.rankSum / v.plays   // ★平均順位
-    }))
-    .sort((a,b)=>
-      a.avgRank - b.avgRank ||   // ★小さいほど上
-      b.gold - a.gold ||
-      b.silver - a.silver ||
-      a.name.localeCompare(b.name,"ja")
-    );
-}
-
-    // ===== モード別（既存のまま：pt / wins / plays）=====
+    // ===== モード別（今はpt/wins/plays。将来ここも☆集計に置換してOK）=====
     function computeModeStats(type, mode){
       const map = new Map();
-      const add = (name, pt, isWin)=>{
+      const add = (name, isWin)=>{
         if(!name) return;
-        const v = map.get(name) ?? {pt:0,wins:0,plays:0};
-        v.pt += pt;
+        const v = map.get(name) ?? {wins:0, plays:0};
         v.plays += 1;
         if(isWin) v.wins += 1;
         map.set(name, v);
@@ -771,24 +760,32 @@ function computeStats(type){
 
       events.filter(e=>e.type===type && e.mode===mode).forEach(e=>{
         if(type==="singles"){
-          e.results.forEach(r=> add(r.player, singlesPoints[r.rank] ?? 0, r.rank===1));
+          e.results.forEach(r=> add(r.player, r.rank===1));
         }else{
           e.results.forEach(r=>{
-            const ptEach = doublesPerPerson(r.rank);
-            add(r.p1, ptEach, r.rank===1);
-            add(r.p2, ptEach, r.rank===1);
+            add(r.p1, r.rank===1);
+            add(r.p2, r.rank===1);
           });
         }
       });
 
       return Array.from(map.entries())
         .map(([name,v])=>({name, ...v}))
-        .sort((a,b)=> b.pt-a.pt || b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
+        .sort((a,b)=> b.wins-a.wins || b.plays-a.plays || a.name.localeCompare(b.name,"ja"));
     }
 
     function stars(n, cls){
       if(!n) return `<span class="muted">—</span>`;
       return `<span class="${cls}">☆${n}</span>`;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
     function renderOverall(tbodyId, rows){
@@ -813,57 +810,57 @@ function computeStats(type){
       });
     }
 
-  function renderModeCard(targetId, title, rows){
-  const wrap = document.createElement("div");
-  wrap.className = "card";
+    function renderModeCard(targetId, title, rows){
+      const wrap = document.createElement("div");
+      wrap.className = "card";
 
-  const h2 = document.createElement("h2");
-  const left = document.createElement("span");
-  left.textContent = title;
-  const right = document.createElement("span");
-  right.className = "tag";
-  right.innerHTML = `<span style="color:var(--accent2)">◆</span> best`;
-  h2.appendChild(left);
-  h2.appendChild(right);
+      const h2 = document.createElement("h2");
+      const left = document.createElement("span");
+      left.textContent = title;
+      const right = document.createElement("span");
+      right.className = "tag";
+      right.innerHTML = `<span style="color:var(--accent2)">◆</span> best`;
+      h2.appendChild(left);
+      h2.appendChild(right);
 
-  const content = document.createElement("div");
-  content.style.overflow = "auto";
+      const content = document.createElement("div");
+      content.style.overflow = "auto";
 
-  const table = document.createElement("table");
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>順位</th>
-        <th>プレイヤー</th>
-        <th class="right">参加</th>
-        <th class="right">☆（1位）</th>
-        <th class="right">☆（2位）</th>
-      </tr>
-    </thead>
-    <tbody></tbody>`;
-  const tb = table.querySelector("tbody");
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>順位</th>
+            <th>プレイヤー</th>
+            <th class="right">参加</th>
+            <th class="right">☆（1位）</th>
+            <th class="right">☆（2位）</th>
+          </tr>
+        </thead>
+        <tbody></tbody>`;
+      const tb = table.querySelector("tbody");
 
-  const top = rows.slice(0,8);
-  if(top.length===0){
-    tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
-  }else{
-    addTiedRanks(top).forEach(r=>{
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="mono">${r.rank}</td>
-        <td>${escapeHtml(r.name)}</td>
-        <td class="right mono">${r.plays}</td>
-        <td class="right mono">${stars(r.wins, "star-gold")}</td>
-        <td class="right mono">—</td>`;
-      tb.appendChild(tr);
-    });
-  }
+      const top = rows.slice(0,8);
+      if(top.length===0){
+        tb.innerHTML = `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
+      }else{
+        addTiedRanks(top).forEach(r=>{
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="mono">${r.rank}</td>
+            <td>${escapeHtml(r.name)}</td>
+            <td class="right mono">${r.plays}</td>
+            <td class="right mono">${stars(r.wins, "star-gold")}</td>
+            <td class="right mono">—</td>`;
+          tb.appendChild(tr);
+        });
+      }
 
-  content.appendChild(table);
-  wrap.appendChild(h2);
-  wrap.appendChild(content);
-  document.getElementById(targetId).appendChild(wrap);
-}
+      content.appendChild(table);
+      wrap.appendChild(h2);
+      wrap.appendChild(content);
+      document.getElementById(targetId).appendChild(wrap);
+    }
 
     // CSV読み込み → events化
     async function loadEventsFromSheet(){
@@ -943,13 +940,13 @@ function computeStats(type){
       return out;
     }
 
-    // ===== 個人成績（全員一覧）=====
+    // ===== ログ（全員一覧）=====
     function normalizeText(s){
       return (s || "").trim().toLowerCase();
     }
 
-    function pointsForResult(type, rank){
-      // 表用：順位に関係なく「参加=1」
+    // 表用：ptの代わりに「参加=1」
+    function pointsForResult(){
       return 1;
     }
 
@@ -965,7 +962,7 @@ function computeStats(type){
               mode: e.mode,
               rank: r.rank,
               partner: "",
-              pt: pointsForResult("singles", r.rank),
+              pt: pointsForResult(),
               player: r.player || "",
             });
           }else{
@@ -976,7 +973,7 @@ function computeStats(type){
               mode: e.mode,
               rank: r.rank,
               partner: r.p2 || "",
-              pt: pointsForResult("doubles", r.rank),
+              pt: pointsForResult(),
               player: r.p1 || "",
             });
             out.push({
@@ -986,7 +983,7 @@ function computeStats(type){
               mode: e.mode,
               rank: r.rank,
               partner: r.p1 || "",
-              pt: pointsForResult("doubles", r.rank),
+              pt: pointsForResult(),
               player: r.p2 || "",
             });
           }
@@ -1016,11 +1013,11 @@ function computeStats(type){
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="mono">${x.date}</td>
-          <td>${x.tournament}</td>
+          <td>${escapeHtml(x.tournament)}</td>
           <td>${x.type === "singles" ? "シングル" : "ダブル"}</td>
           <td>${x.mode === "fever" ? "フィーバー" : "クラシック"}</td>
           <td class="mono">${x.rank}</td>
-          <td>${x.partner || "—"}</td>
+          <td>${x.partner ? escapeHtml(x.partner) : "—"}</td>
           <td class="right mono">${x.pt}</td>
           <td>${x.player ? `<span class="player-link" data-player="${escapeHtml(x.player)}">${escapeHtml(x.player)}</span>` : "—"}</td>
         `;
@@ -1206,7 +1203,6 @@ function computeStats(type){
 
         let rowsRaw = computeStats(type);
 
-        // 表用：ptが無いので「参加が0の人を隠す」扱いに寄せる（実際ほぼ全員>0）
         if(hideZero && hideZero.checked){
           rowsRaw = rowsRaw.filter(r => (r.plays ?? 0) > 0);
         }
@@ -1332,7 +1328,7 @@ function computeStats(type){
         tr.dataset.key = eventKey(e);
         tr.innerHTML = `
           <td class="mono">${e.date}</td>
-          <td>${e.tournament}${e.note ? `<span class="muted">（${e.note}）</span>` : ""}</td>
+          <td>${escapeHtml(e.tournament)}${e.note ? `<span class="muted">（${escapeHtml(e.note)}）</span>` : ""}</td>
           <td>${formatType(e.type)}</td>
           <td>${formatMode(e.mode)}</td>
         `;
@@ -1353,7 +1349,7 @@ function computeStats(type){
       title.textContent = `${e.tournament}${e.note ? `（${e.note}）` : ""}`;
 
       const sum = getEventSummary(e);
-      const zeroNote = sum.zeroCount > 0 ? ` / 0pt:${sum.zeroText}` : "";
+      const zeroNote = sum.zeroCount > 0 ? ` / rank0:${sum.zeroText}` : "";
 
       const fmt =
         e.format === "rr" ? "総当たり" :
@@ -1369,14 +1365,10 @@ function computeStats(type){
       const hideZero = document.getElementById("tourHideZero");
       const raw = (e.results || []).slice().sort((a,b)=>a.rank-b.rank);
 
-      const getPt = (r)=>{
-        if(e.type === "singles") return singlesPoints[r.rank] ?? 0;
-        return doublesPerPerson(r.rank) ?? 0;
-      };
-
+      // ★「0ptを隠す」→「rank=0 を隠す」
       const pick = ()=> {
         const hz = hideZero ? hideZero.checked : true;
-        return hz ? raw.filter(x => getPt(x) > 0) : raw;
+        return hz ? raw.filter(x => Number(x.rank) > 0) : raw;
       };
 
       const renderBody = ()=>{
@@ -1384,7 +1376,7 @@ function computeStats(type){
         const results = pick();
 
         if(results.length === 0){
-          body.innerHTML = `<tr><td colspan="4" class="muted">結果なし</td></tr>`;
+          body.innerHTML = `<tr><td colspan="3" class="muted">結果なし</td></tr>`;
           return;
         }
 
@@ -1392,19 +1384,14 @@ function computeStats(type){
           const tr = document.createElement("tr");
 
           if(e.type === "singles"){
-            const pt = singlesPoints[r.rank] ?? 0;
             tr.innerHTML = `
               <td class="mono">${r.rank}</td>
-              <td>${r.player || "—"}</td>
-              <td class="right mono">${pt}</td>
-              <td class="muted">—</td>
+              <td colspan="2">${escapeHtml(r.player || "—")}</td>
             `;
           }else{
-            const teamPt = doublesTeamPoints[r.rank] ?? 0;
             tr.innerHTML = `
               <td class="mono">${r.rank}</td>
-              <td colspan="2">${(r.p1||"—")} / ${(r.p2||"—")}</td>
-              <td class="right mono">${teamPt}</td>
+              <td colspan="2">${escapeHtml(r.p1||"—")} / ${escapeHtml(r.p2||"—")}</td>
             `;
           }
 
@@ -1442,22 +1429,12 @@ function computeStats(type){
     // ===== Player Modal =====
     let playerIndex = {};
 
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
     function buildPlayerIndexFromEvents(events){
       const index = {};
 
       for(const e of (events || [])){
         for(const r of (e.results || [])){
           const rank = Number(r.rank ?? 0);
-          const pt = pointsForResult(e.type, rank);
 
           if(e.type === "singles"){
             const name = (r.player || "").trim();
@@ -1465,7 +1442,7 @@ function computeStats(type){
 
             (index[name] ||= []).push({
               date: e.date, tournament: e.tournament, type: e.type, mode: e.mode,
-              format: e.format || "", rank, pt, partner: null
+              format: e.format || "", rank, partner: null
             });
 
           }else{
@@ -1475,11 +1452,11 @@ function computeStats(type){
 
             (index[p1] ||= []).push({
               date: e.date, tournament: e.tournament, type: e.type, mode: e.mode,
-              format: e.format || "", rank, pt, partner: p2
+              format: e.format || "", rank, partner: p2
             });
             (index[p2] ||= []).push({
               date: e.date, tournament: e.tournament, type: e.type, mode: e.mode,
-              format: e.format || "", rank, pt, partner: p1
+              format: e.format || "", rank, partner: p1
             });
           }
         }
@@ -1500,7 +1477,7 @@ function computeStats(type){
         (x.format || "—");
 
       const sub = `${x.date} / ${typeJ} / ${modeJ} / 形式:${fmtJ}` + (x.partner ? ` / 相方:${x.partner}` : "");
-      const badge = `${x.rank}位 / ${x.pt}pt`;
+      const badge = `${x.rank}位`;
 
       return `
         <div class="pRow">
@@ -1559,10 +1536,10 @@ function computeStats(type){
       if(pairArr.length){
         pairsWrap.style.display = "";
         pairsEl.innerHTML = pairArr.map(([partner,count])=>`
-          <div class="row">
-            <div class="row-left">
-              <div class="row-main"><span class="player-link" data-player="${escapeHtml(partner)}">${escapeHtml(partner)}</span></div>
-              <div class="row-sub">一緒に組んだ回数</div>
+          <div class="pRow">
+            <div class="pRow-left">
+              <div class="pRow-main"><span class="player-link" data-player="${escapeHtml(partner)}">${escapeHtml(partner)}</span></div>
+              <div class="pRow-sub">一緒に組んだ回数</div>
             </div>
             <div class="badge">${count}回</div>
           </div>
@@ -1680,7 +1657,7 @@ function computeStats(type){
       <div style="padding:10px 12px;">
         <label class="muted" style="display:inline-flex; gap:6px; align-items:center; font-size:12px; margin-bottom:8px;">
           <input id="tourHideZero" type="checkbox" checked>
-          0ptを隠す
+          rank0を隠す
         </label>
 
         <div class="scrollBox" style="max-height:70vh; border-top:none;">
@@ -1688,13 +1665,13 @@ function computeStats(type){
             <thead>
               <tr>
                 <th>順位</th>
-                <th colspan="2">プレイヤー名</th>
-                <th class="right">pt</th>
+                <th colspan="2">プレイヤー</th>
               </tr>
             </thead>
             <tbody id="tourModalBody"></tbody>
           </table>
         </div>
+
         <div class="muted" style="font-size:11px; padding:6px 2px 0; opacity:.7;">
           ※ダブルスは個人表示（相方付き）
         </div>
